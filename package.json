@@ -1,0 +1,22 @@
+{
+  "name": "flag_manager",
+  "version": "1.0.0",
+  "description": "Feature-flag management system and SDK.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "O. Anaedozie",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
