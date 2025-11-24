@@ -1,0 +1,19 @@
+meta {
+  name: createUsers
+  type: http
+  seq: 3
+}
+
+post {
+  url: http:localhost:3001/api/v1/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Pete Pan",
+    "email": "pan@email.com",
+    "role": ["VIEWER"]
+  }
+}

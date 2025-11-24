@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2020",
+    "module": "es2022",
+    "lib": ["ES2020"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@admin/*": ["./apps/admin/*"],
+      "@api/*": ["./apps/api/*"],
+      "@db/*": ["./packages/db/*"],
+      "@repo/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
