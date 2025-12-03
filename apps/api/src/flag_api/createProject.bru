@@ -1,0 +1,18 @@
+meta {
+  name: createProject
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3001/api/v1/projects
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "API Version 1.6",
+    "slug": "api_version_1.6"
+  }
+}

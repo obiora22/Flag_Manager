@@ -1,7 +1,8 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
-import userRoutes from "./routes/user.routes";
+import { userRoutes } from "./routes/user.routes";
+import { projectRoutes } from "@api/src/routes/project.routes";
 import prismaPlugin from "@db/prisma.plugin";
 import dotenv from "dotenv";
 
@@ -31,6 +32,8 @@ function buildServer() {
   app.register(helmet);
 
   app.register(userRoutes, { prefix: "/api/v1" });
+
+  app.register(projectRoutes, { prefix: "/api/v1" });
 
   app.get("/health", async () => {
     return { status: "ok" };

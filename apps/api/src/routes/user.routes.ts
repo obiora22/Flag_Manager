@@ -11,21 +11,15 @@ import {
   baseUserSchema,
   UpdateUser,
   updateUserSchema,
-} from "@repo/schema/user.schema";
+} from "@repo/packages/schema/user.schema";
 import { UserServices } from "@db/services/userServices";
 import { z } from "zod";
-declare module "fastify" {
-  interface FastifyRequest {
-    baseUser: BaseUser;
-    updateUser: UpdateUser;
-  }
-}
 
 interface RequestParams {
   Params: { id: string };
 }
 
-export default async function userRoutes(
+export async function userRoutes(
   fastify: FastifyInstance,
   options: FastifyPluginOptions
 ) {
@@ -65,14 +59,16 @@ export default async function userRoutes(
         return reply.send({
           ok: false,
           data: null,
-          error: z.flattenError(error),
+          error: {
+            message: "Invalid parameters",
+            details: z.flattenError(error),
+          },
         });
       request.baseUser = body;
       done();
     },
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
       const body = request.baseUser;
-      console.log("HANLDER", { body });
       const { ok, data, error } = await UserServices.createUser(
         body,
         fastify.prisma
@@ -93,7 +89,10 @@ export default async function userRoutes(
         return reply.send({
           ok: false,
           data: null,
-          error: z.flattenError(error),
+          error: {
+            message: "Invalid paramters",
+            details: z.flattenError(error),
+          },
         });
       request.updateUser = body;
     },
@@ -103,11 +102,11 @@ export default async function userRoutes(
         body,
         fastify.prisma
       );
-      return {
+      return reply.send({
         ok: false,
         data: null,
         error: error,
-      };
+      });
     },
   });
   fastify.delete("/users/:id", {

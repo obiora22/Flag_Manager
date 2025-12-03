@@ -1,7 +1,7 @@
 import { User } from "@db/prisma/generated/client";
 import { prismaClientInstance } from "@db/lib/prismaClient";
 import { narrowError } from "@repo/utils/narrowError";
-import { BaseUser, UpdateUser } from "@repo/schema/user.schema";
+import { BaseUser, UpdateUser } from "@repo/packages/schema/user.schema";
 import { PrismaClient } from "@prisma/client";
 
 export class UserServices {
