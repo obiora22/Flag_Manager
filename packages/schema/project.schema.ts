@@ -7,7 +7,7 @@ import {
 
 const returnValue = z.union([z.number(), z.string(), z.boolean(), z.json()]);
 
-const baseRuleSchema = z.object({
+export const baseRuleSchema = z.object({
   condition: z
     .object({
       attribute: z.string(),
@@ -51,3 +51,5 @@ export const updateProjectSchema = baseProjectSchema.extend({ id: z.string() });
 export type BaseProject = z.infer<typeof baseProjectSchema>;
 
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
+
+export type BaseRule = z.infer<typeof baseRuleSchema>;

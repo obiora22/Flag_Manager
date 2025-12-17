@@ -7,6 +7,8 @@ import prismaPlugin from "@db/prisma.plugin";
 import dotenv from "dotenv";
 
 import { PrismaClient } from "@prisma/client";
+import { flagRoutes } from "./routes/flag.routes";
+import { environmentRoutes } from "./routes/environment.routes";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -34,6 +36,10 @@ function buildServer() {
   app.register(userRoutes, { prefix: "/api/v1" });
 
   app.register(projectRoutes, { prefix: "/api/v1" });
+
+  app.register(flagRoutes, { prefix: "/api/v1" });
+
+  app.register(environmentRoutes, { prefix: "/api/v1" });
 
   app.get("/health", async () => {
     return { status: "ok" };
