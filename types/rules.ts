@@ -1,7 +1,7 @@
 import { Flag } from "@db/prisma/generated/client";
 import { JsonArray } from "@db/prisma/generated/internal/prismaNamespace";
-import { RulesSchema } from "@schema/flag.schema";
-import { baseRuleSchema } from "@schema/project.schema";
+import { RulesSchema } from "@schema/flag.schema.js";
+import { baseRuleSchema } from "@schema/project.schema.js";
 import crypto from "crypto";
 type Operator =
   | "equals"

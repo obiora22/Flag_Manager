@@ -16,7 +16,7 @@ import {
   BaseFlag,
   updateFlagSchema,
   baseFlagSchema,
-} from "@schema/flag.schema";
+} from "@schema/flag.schema.js";
 import { Prisma } from "@db/prisma/generated/client";
 import z from "zod";
 

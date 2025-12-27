@@ -1,12 +1,14 @@
 import { z } from "zod";
 
-export const baseUserSchema = z.object({
+export const BaseUserSchema = z.object({
   name: z.string(),
   email: z.email(),
   role: z.enum(["VIEWER", "EDITOR", "ADMIN"]),
 });
 
-export const updateUserSchema = baseUserSchema.extend({ id: z.uuid() });
+export const UpdateUserSchema = BaseUserSchema.extend({ id: z.uuid() });
+console.log("user.schema loaded, BaseUserSchema:", BaseUserSchema);
+export type BaseUser = z.infer<typeof BaseUserSchema>;
+export type UpdateUser = z.infer<typeof UpdateUserSchema>;
 
-export type BaseUser = z.infer<typeof baseUserSchema>;
-export type UpdateUser = z.infer<typeof updateUserSchema>;
+export default BaseUserSchema;

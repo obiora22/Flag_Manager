@@ -5,13 +5,13 @@ import {
   FastifyRequest,
   HookHandlerDoneFunction,
 } from "fastify";
-import { ProjectServices } from "@db/services/projectServices";
+import { ProjectServices } from "@db/services/projectServices.js";
 import {
   BaseProject,
   baseProjectSchema,
   UpdateProject,
   updateProjectSchema,
-} from "@schema/project.schema";
+} from "@schema/project.schema.js";
 import z from "zod";
 interface RequestParams {
   Params: {

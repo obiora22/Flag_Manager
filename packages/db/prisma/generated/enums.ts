@@ -9,13 +9,13 @@
 * 🟢 You can import this file directly.
 */
 
-export const RoleType = {
+export const Role = {
   VIEWER: 'VIEWER',
   EDITOR: 'EDITOR',
   ADMIN: 'ADMIN'
 } as const
 
-export type RoleType = (typeof RoleType)[keyof typeof RoleType]
+export type Role = (typeof Role)[keyof typeof Role]
 
 
 export const ReturnValueType = {

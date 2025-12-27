@@ -1,8 +1,18 @@
-import { User } from "@db/prisma/generated/client";
-import { prismaClientInstance } from "@db/lib/prismaClient";
+import { User, PrismaClient } from "@db/prisma/generated/client";
 import { narrowError } from "@repo/utils/narrowError";
-import { BaseUser, UpdateUser } from "@repo/packages/schema/user.schema";
-import { PrismaClient } from "@prisma/client";
+// import { BaseUser, UpdateUser } from "@repo/packages/schema/user.schema";
+
+type ServiceResult<T> =
+  | {
+      ok: true;
+      data: T | null;
+      error: null;
+    }
+  | {
+      ok: false;
+      data: null;
+      error: string;
+    };
 
 export class UserServices {
   static async getUsers(prismaClientInstance: PrismaClient) {
@@ -45,6 +55,35 @@ export class UserServices {
         data: null,
         error: narrowError(err).message,
       } as const;
+    }
+  }
+
+  static async getUserByEmail(
+    email: string,
+    prismaClientInstance: PrismaClient
+  ): Promise<ServiceResult<User>> {
+    try {
+      const user = await prismaClientInstance.user.findUnique({
+        where: { email },
+      });
+      if (!user)
+        return {
+          ok: true,
+          data: null,
+          error: null,
+        };
+
+      return {
+        ok: true,
+        data: user,
+        error: null,
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        data: null,
+        error: narrowError(err).message,
+      };
     }
   }
 

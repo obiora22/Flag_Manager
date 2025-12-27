@@ -42,3 +42,13 @@ export type Flag = Prisma.FlagModel
  * 
  */
 export type FlagEnvironment = Prisma.FlagEnvironmentModel
+/**
+ * Model Organization
+ * 
+ */
+export type Organization = Prisma.OrganizationModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel

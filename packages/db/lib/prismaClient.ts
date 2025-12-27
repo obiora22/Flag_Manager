@@ -1,15 +1,29 @@
 import { PrismaClient, Prisma } from "@db/prisma/generated/client";
+import {
+  LogDefinition,
+  LogLevel,
+} from "@db/prisma/generated/internal/prismaNamespace";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const config: Prisma.PrismaClientOptions = {
-  log: [
-    {
-      level: "query",
-      emit: "event",
-    },
-  ],
-};
+const log: (LogLevel | LogDefinition)[] = [
+  {
+    level: "query",
+    emit: "event",
+  },
+];
 
-const singleton = () => new PrismaClient(config);
+// resolve prisma accelerate
+// const config: Prisma.PrismaClientOptions = {
+//   accelerateUrl:
+//     process.env.PRISMA_ACCELERATE_URL || "your-accelerate-url-here",
+//   log
+// };
+
+const adapter = new PrismaPg({
+  connectiontring: process.env.DATABASE_URL,
+});
+
+const singleton = () => new PrismaClient({ adapter, log });
 
 const globalPrisma = global as unknown as { prisma: PrismaClient };
 

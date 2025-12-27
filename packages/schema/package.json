@@ -1,12 +1,16 @@
 {
-  "name": "schema",
+  "name": "@packages/schema",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "zod schema",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
   },
-  "keywords": [],
-  "author": "",
+  "author": "Obiora Anaedozie",
   "license": "ISC"
 }

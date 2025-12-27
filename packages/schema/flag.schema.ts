@@ -1,5 +1,6 @@
-import { ReturnValueType } from "@db/prisma/generated/enums";
-import { BaseRule, baseRuleSchema } from "./project.schema";
+import { ReturnValueType } from "@db/prisma/generated/client.js";
+import { BaseRule, baseRuleSchema } from "./project.schema.js";
+import { baseEnvironmentSchema } from "./environment.schema.js";
 import z from "zod";
 
 export const ConditionSchema = z.object({
@@ -43,14 +44,27 @@ export const RulesSchema = z.array(RuleSchema);
 //   z.boolean(),
 // ]);
 
+// export const baseFlagSchema = z.object({
+//   key: z.string(),
+//   description: z.string().optional(),
+//   rules: RulesSchema,
+//   returnValueType: z.enum(ReturnValueType),
+//   defaultValue: z.json(),
+//   archived: z.boolean().optional(),
+//   projectId: z.uuid(),
+// });
+
 export const baseFlagSchema = z.object({
   key: z.string(),
-  description: z.string().optional(),
-  rules: RulesSchema,
+  description: z.string(),
+  rules: baseRuleSchema,
   returnValueType: z.enum(ReturnValueType),
   defaultValue: z.json(),
-  archived: z.boolean().optional(),
+  archived: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
   projectId: z.uuid(),
+  environments: baseEnvironmentSchema,
 });
 
 export const updateFlagSchema = baseFlagSchema.extend({

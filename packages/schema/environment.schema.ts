@@ -1,4 +1,4 @@
-import { InputJsonValue } from "@db/prisma/generated/internal/prismaNamespace";
+import { InputJsonValue } from "@db/prisma/generated/internal/prismaNamespace.js";
 import z from "zod";
 
 export const baseEnvironmentSchema = z.object({

@@ -4,19 +4,18 @@ import {
   FastifyPluginOptions,
   FastifyInstance,
 } from "fastify";
-import { User } from "@db/prisma/generated/client";
-import { server as fastify } from "@api/src/server";
+import { User } from "@db/prisma/generated/client.js";
 import {
+  UpdateUserSchema,
+  BaseUserSchema,
   BaseUser,
-  baseUserSchema,
   UpdateUser,
-  updateUserSchema,
-} from "@repo/packages/schema/user.schema";
-import { UserServices } from "@db/services/userServices";
+} from "@schema/user.schema.js";
+import { UserServices } from "@db/services/userServices.js";
 import { z } from "zod";
 
-interface RequestParams {
-  Params: { id: string };
+interface RequestParams<T> {
+  Params: T;
 }
 
 export async function userRoutes(
@@ -31,9 +30,9 @@ export async function userRoutes(
     },
   });
 
-  fastify.get("/users/:id", {
+  fastify.get("/users/id/:id", {
     handler: async (
-      request: FastifyRequest<RequestParams>,
+      request: FastifyRequest<RequestParams<{ id: string }>>,
       reply: FastifyReply
     ) => {
       const { id } = request.params;
@@ -50,11 +49,31 @@ export async function userRoutes(
     },
   });
 
+  fastify.get("/users/email/:email", {
+    handler: async (
+      request: FastifyRequest<RequestParams<{ email: string }>>,
+      reply: FastifyReply
+    ) => {
+      const { email } = request.params;
+      const decodedEmail = decodeURIComponent(email);
+      const { ok, data, error } = await UserServices.getUserByEmail(
+        decodedEmail,
+        fastify.prisma
+      );
+
+      return reply.send({
+        ok,
+        data,
+        error,
+      });
+    },
+  });
+
   fastify.post("/users", {
     preHandler: (request: FastifyRequest, reply: FastifyReply, done) => {
       console.log({ body: request.body });
       const body = request.body as BaseUser;
-      const { data, error } = baseUserSchema.safeParse(body);
+      const { data, error } = BaseUserSchema.safeParse(body);
       if (error)
         return reply.send({
           ok: false,
@@ -84,7 +103,7 @@ export async function userRoutes(
   fastify.put("/users/:id", {
     preHandler: (request: FastifyRequest, reply: FastifyReply) => {
       const body = request.body as UpdateUser;
-      const { data, error } = updateUserSchema.safeParse(body);
+      const { data, error } = UpdateUserSchema.safeParse(body);
       if (error)
         return reply.send({
           ok: false,
@@ -111,7 +130,7 @@ export async function userRoutes(
   });
   fastify.delete("/users/:id", {
     handler: async (
-      request: FastifyRequest<RequestParams>,
+      request: FastifyRequest<RequestParams<User>>,
       reply: FastifyReply
     ) => {
       const { id } = request.params;

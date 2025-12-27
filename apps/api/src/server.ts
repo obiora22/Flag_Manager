@@ -1,14 +1,15 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
-import { userRoutes } from "./routes/user.routes";
-import { projectRoutes } from "@api/src/routes/project.routes";
-import prismaPlugin from "@db/prisma.plugin";
-import dotenv from "dotenv";
+import { userRoutes } from "./routes/user.routes.ts";
+import { projectRoutes } from "./routes/project.routes.ts";
+import { flagRoutes } from "./routes/flag.routes.ts";
+import { environmentRoutes } from "./routes/environment.routes.ts";
 
-import { PrismaClient } from "@prisma/client";
-import { flagRoutes } from "./routes/flag.routes";
-import { environmentRoutes } from "./routes/environment.routes";
+import prismaPlugin from "@db/prisma.plugin.ts";
+import * as dotenv from "dotenv";
+
+import { PrismaClient } from "@db/prisma/generated/client.ts";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -35,11 +36,11 @@ function buildServer() {
 
   app.register(userRoutes, { prefix: "/api/v1" });
 
-  app.register(projectRoutes, { prefix: "/api/v1" });
+  // app.register(projectRoutes, { prefix: "/api/v1" });
 
-  app.register(flagRoutes, { prefix: "/api/v1" });
+  // app.register(flagRoutes, { prefix: "/api/v1" });
 
-  app.register(environmentRoutes, { prefix: "/api/v1" });
+  // app.register(environmentRoutes, { prefix: "/api/v1" });
 
   app.get("/health", async () => {
     return { status: "ok" };

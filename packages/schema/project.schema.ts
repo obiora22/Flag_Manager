@@ -3,7 +3,7 @@ import {
   Flag,
   FlagEnvironmentType,
   ReturnValueType,
-} from "@db/prisma/generated/client";
+} from "@db/prisma/generated/client.ts";
 
 const returnValue = z.union([z.number(), z.string(), z.boolean(), z.json()]);
 
@@ -25,19 +25,6 @@ const baseFlagEnvironment = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   fladId: z.uuid(),
-});
-
-export const baseFlagSchema = z.object({
-  key: z.string(),
-  description: z.string(),
-  rules: baseRuleSchema,
-  returnValueType: z.enum(ReturnValueType),
-  defaultValue: z.json(),
-  archived: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  projectId: z.uuid(),
-  environments: baseFlagEnvironment,
 });
 
 export const baseProjectSchema = z.object({

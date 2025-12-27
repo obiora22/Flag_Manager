@@ -10,7 +10,7 @@ import {
   baseEnvironmentSchema,
   UpdateEnvironment,
   updateEnvironmentSchema,
-} from "@schema/environment.schema";
+} from "@schema/environment.schema.js";
 import z from "zod";
 import { handleResults } from "@repo/utils/serviceReturn";
 
