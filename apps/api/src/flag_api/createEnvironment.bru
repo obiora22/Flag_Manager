@@ -1,0 +1,25 @@
+meta {
+  name: createEnvironment
+  type: http
+  seq: 9
+}
+
+post {
+  url: http:localhost:3001/api/v1/environment
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "flagId": "5838dd4e-098d-4cfb-81f2-2c90a67b9051",
+    "environment": "STAGING",
+    "overrides": {
+      "rules": {
+      "conditions": [],
+      "rollout": null,
+      "default": true
+     }
+    }
+  }
+}

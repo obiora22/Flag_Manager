@@ -1,0 +1,26 @@
+meta {
+  name: createFlag
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3001/api/v1/flags
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "key": "enable api:version_1.7",
+    "description": "new api service",
+    "rules": {
+      "conditions": [],
+      "rollout": null,
+      "default": true
+    },
+    "returnValueType": "JSON",
+    "defaultValue": true,
+    "projectId": "3c9b5c71-451e-4163-8d68-3adc2ef468e5"
+  }
+}
