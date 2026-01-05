@@ -12,13 +12,18 @@
     }
   },
   "scripts": {
-    "schema:format": "npx prisma format --schema='./schema.prisma'"
+    "format": "npx prisma format --schema='./schema.prisma'",
+    "generate": "npx prisma generate --schema='./schema.prisma'",
+    "push": "npx prisma db push --schema='./schema.prisma'"
+  },
+  "author": "O. Anaedozie",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.2.0"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
-    "prisma": "^7.2.0"
-  },
-  "author": "Obiora Anaedozie",
-  "license": "ISC"
+    "@prisma/client": "^7.2.0"
+  }
 }

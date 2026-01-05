@@ -1,7 +1,7 @@
-import { User, PrismaClient } from "@db/prisma/generated/client";
+import { User, PrismaClient, Prisma } from "@db/prisma/generated/client";
 import { narrowError } from "@repo/utils/narrowError";
-// import { BaseUser, UpdateUser } from "@repo/packages/schema/user.schema";
-
+import { BaseUser, UpdateUser } from "@repo/packages/schema/user.schema";
+import { prismaClientInstance as pCI } from "@db/lib/prismaClient";
 type ServiceResult<T> =
   | {
       ok: true;
@@ -14,10 +14,21 @@ type ServiceResult<T> =
       error: string;
     };
 
+async function checkDatabase(prismaClientInstance: PrismaClient) {
+  // Call on your existing instance
+  const [db] = await prismaClientInstance.$queryRaw<
+    [{ current_database: string }]
+  >`
+    SELECT current_database()
+  `;
+  console.log("Connected to:", db.current_database);
+}
+
 export class UserServices {
   static async getUsers(prismaClientInstance: PrismaClient) {
+    // checkDatabase(prismaClientInstance);
     try {
-      const users = await prismaClientInstance.user.findMany();
+      const users = await pCI.user.findMany();
       return {
         data: users,
         ok: true,
@@ -143,7 +154,7 @@ export class UserServices {
     }
   }
 
-  static async deleteUser(id: string) {
+  static async deleteUser(id: string, prismaClientInstance: PrismaClient) {
     try {
       const user = await prismaClientInstance.user.delete({
         where: { id },

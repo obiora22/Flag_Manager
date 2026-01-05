@@ -7,17 +7,15 @@ import { flagRoutes } from "./routes/flag.routes.ts";
 import { environmentRoutes } from "./routes/environment.routes.ts";
 
 import prismaPlugin from "@db/prisma.plugin.ts";
-import * as dotenv from "dotenv";
 
 import { PrismaClient } from "@db/prisma/generated/client.ts";
+import { healthCheckRoute } from "./routes/healthCheck.routes.ts";
 
 declare module "fastify" {
   interface FastifyInstance {
     prisma: PrismaClient;
   }
 }
-
-dotenv.config({ path: "../../packages/db/.env" });
 
 function buildServer() {
   const app = Fastify({
@@ -36,15 +34,13 @@ function buildServer() {
 
   app.register(userRoutes, { prefix: "/api/v1" });
 
-  // app.register(projectRoutes, { prefix: "/api/v1" });
+  app.register(projectRoutes, { prefix: "/api/v1" });
 
-  // app.register(flagRoutes, { prefix: "/api/v1" });
+  app.register(flagRoutes, { prefix: "/api/v1" });
 
-  // app.register(environmentRoutes, { prefix: "/api/v1" });
+  app.register(environmentRoutes, { prefix: "/api/v1" });
 
-  app.get("/health", async () => {
-    return { status: "ok" };
-  });
+  app.register(healthCheckRoute, { prefix: "/api/v1" });
 
   return app;
 }

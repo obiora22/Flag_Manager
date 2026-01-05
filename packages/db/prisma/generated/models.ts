@@ -8,11 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/AuditLog.js'
-export type * from './models/User.js'
-export type * from './models/Project.js'
-export type * from './models/Flag.js'
-export type * from './models/FlagEnvironment.js'
-export type * from './models/Organization.js'
-export type * from './models/Membership.js'
-export type * from './commonInputTypes.js'
+export type * from './models/AuditLog.ts'
+export type * from './models/User.ts'
+export type * from './models/Project.ts'
+export type * from './models/Flag.ts'
+export type * from './models/FlagEnvironment.ts'
+export type * from './models/Organization.ts'
+export type * from './models/Membership.ts'
+export type * from './commonInputTypes.ts'

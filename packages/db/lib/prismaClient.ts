@@ -4,6 +4,7 @@ import {
   LogLevel,
 } from "@db/prisma/generated/internal/prismaNamespace";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { checkHealth } from "@db/lib/healthCheck";
 
 const log: (LogLevel | LogDefinition)[] = [
   {
@@ -12,15 +13,9 @@ const log: (LogLevel | LogDefinition)[] = [
   },
 ];
 
-// resolve prisma accelerate
-// const config: Prisma.PrismaClientOptions = {
-//   accelerateUrl:
-//     process.env.PRISMA_ACCELERATE_URL || "your-accelerate-url-here",
-//   log
-// };
-
 const adapter = new PrismaPg({
-  connectiontring: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
+  schema: "public",
 });
 
 const singleton = () => new PrismaClient({ adapter, log });

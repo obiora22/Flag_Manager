@@ -4,8 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx src/server.ts"
+    "dev": "tsx --env-file=../../.env.development src/server.ts"
   },
   "keywords": [],
   "author": "",

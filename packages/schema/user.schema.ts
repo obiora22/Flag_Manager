@@ -7,8 +7,6 @@ export const BaseUserSchema = z.object({
 });
 
 export const UpdateUserSchema = BaseUserSchema.extend({ id: z.uuid() });
-console.log("user.schema loaded, BaseUserSchema:", BaseUserSchema);
 export type BaseUser = z.infer<typeof BaseUserSchema>;
 export type UpdateUser = z.infer<typeof UpdateUserSchema>;
-
 export default BaseUserSchema;
