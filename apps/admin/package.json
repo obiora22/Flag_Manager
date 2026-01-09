@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "bcrypt-ts": "^8.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.562.0",
     "next": "16.0.3",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.0",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
