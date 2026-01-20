@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   AuditLog: 'AuditLog',
   User: 'User',
+  Credential: 'Credential',
   Project: 'Project',
   Flag: 'Flag',
   FlagEnvironment: 'FlagEnvironment',
@@ -92,12 +93,22 @@ export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typ
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  name: 'name',
-  role: 'role',
-  createdAt: 'createdAt'
+  firstname: 'firstname',
+  lastname: 'lastname',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const CredentialScalarFieldEnum = {
+  userId: 'userId',
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt'
+} as const
+
+export type CredentialScalarFieldEnum = (typeof CredentialScalarFieldEnum)[keyof typeof CredentialScalarFieldEnum]
 
 
 export const ProjectScalarFieldEnum = {

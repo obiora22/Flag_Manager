@@ -46,11 +46,21 @@ model AuditLog {
 model User {
   id          String       @id @default(uuid())
   email       String       @unique
-  name        String
-  role        Role
+  firstname        String
+  lastname String
+  credential       Credential?
   projects    Project[]
   memberships Membership[]
   createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Credential {
+  userId       String  @id
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Project {
@@ -94,7 +104,7 @@ model FlagEnvironment {
 
 model Organization {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   createdAt DateTime @default(now())
 
   memberships Membership[]
@@ -102,7 +112,7 @@ model Organization {
 }
 
 model Membership {
-  id     String @id @default(cuid())
+  id     String @id @default(uuid())
   userId String
   orgId  String
   role   Role
@@ -113,3 +123,5 @@ model Membership {
 
   @@unique([userId, orgId])
 }
+
+

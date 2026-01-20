@@ -2,8 +2,9 @@
   "compilerOptions": {
     "typeRoots": ["node_modules/@types", "./types/fastify"],
     "strict": true,
-    "module": "esnext",
-    "target": "es2022",
+    // "module": "esnext",
+    // "target": "es2022",
+    // "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "allowJs": false,
     "allowImportingTsExtensions": true,

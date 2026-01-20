@@ -1,12 +1,12 @@
 import { PrismaClient } from "@db/prisma/generated/client";
-import { handleError, handleResults } from "@repo/utils/serviceReturn";
+import { handleError, handleResult } from "@repo/utils/serviceReturn";
 import { BaseEnvironment, UpdateEnvironment } from "@schema/environment.schema";
 
 export class EnvironmentServices {
   static async findAll(dbClientInstance: PrismaClient) {
     try {
       const response = await dbClientInstance.flagEnvironment.findMany();
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -16,7 +16,7 @@ export class EnvironmentServices {
       const response = await dbClientInstance.flagEnvironment.findUnique({
         where: { id },
       });
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -27,7 +27,7 @@ export class EnvironmentServices {
         data,
       });
 
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -37,7 +37,7 @@ export class EnvironmentServices {
       const response = await dbClientInstance.flagEnvironment.delete({
         where: { id },
       });
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }

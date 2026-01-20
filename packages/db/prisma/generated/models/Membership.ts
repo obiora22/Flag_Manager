@@ -387,6 +387,10 @@ export type MembershipUncheckedUpdateManyWithoutOrgNestedInput = {
   deleteMany?: Prisma.MembershipScalarWhereInput | Prisma.MembershipScalarWhereInput[]
 }
 
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
+}
+
 export type MembershipCreateWithoutUserInput = {
   id?: string
   role: $Enums.Role

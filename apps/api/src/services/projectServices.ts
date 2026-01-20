@@ -1,9 +1,9 @@
-import { prismaClientInstance } from "@db/lib/prismaClient";
-import { Project, PrismaClient } from "@db/prisma/generated/client";
+import { prismaClientInstance } from "@db/lib/prismaClient.ts";
+import { Project, PrismaClient } from "@db/prisma/generated/client.ts";
 // import { PrismaClient } from "@prisma/client";
-import { narrowError } from "@repo/utils/narrowError";
-import { handleResults, handleError } from "@repo/utils/serviceReturn";
-import { BaseProject, UpdateProject } from "@schema/project.schema";
+import { narrowError } from "@repo/utils/narrowError.ts";
+import { handleResult, handleError } from "@repo/utils/serviceReturn.ts";
+import { BaseProject, UpdateProject } from "@schema/project.schema.ts";
 
 export class ProjectServices {
   static async getProjects(dbClientInstance: PrismaClient) {
@@ -25,31 +25,24 @@ export class ProjectServices {
         where: { id },
       });
 
-      return handleResults<Project>(project);
+      return handleResult<Project>(project);
     } catch (err) {
       return handleError(err);
     }
   }
 
-  static async createProject(
-    dbClientInstance: PrismaClient,
-    formBody: BaseProject
-  ) {
+  static async createProject(dbClientInstance: PrismaClient, formBody: BaseProject) {
     try {
       const response = await dbClientInstance.project.create({
         data: formBody,
       });
 
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
   }
-  static async updateProject(
-    dbClientInstance: PrismaClient,
-    id: string,
-    formBody: BaseProject
-  ) {
+  static async updateProject(dbClientInstance: PrismaClient, id: string, formBody: BaseProject) {
     console.log({ formBody });
     try {
       const response = await dbClientInstance.project.update({
@@ -57,7 +50,7 @@ export class ProjectServices {
         data: formBody,
       });
 
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -68,7 +61,7 @@ export class ProjectServices {
       const r = await dbClientInstance.project.delete({
         where: { id },
       });
-      return handleResults(r);
+      return handleResult(r);
     } catch (err) {
       return handleError(err);
     }

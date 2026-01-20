@@ -50,6 +50,11 @@ export type AuditLog = Prisma.AuditLogModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model Credential
+ * 
+ */
+export type Credential = Prisma.CredentialModel
+/**
  * Model Project
  * 
  */

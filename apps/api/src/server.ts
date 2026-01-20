@@ -10,6 +10,7 @@ import prismaPlugin from "@db/prisma.plugin.ts";
 
 import { PrismaClient } from "@db/prisma/generated/client.ts";
 import { healthCheckRoute } from "./routes/healthCheck.routes.ts";
+import { accountRegistrationRoutes } from "./routes/account.routes.ts";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -41,6 +42,8 @@ function buildServer() {
   app.register(environmentRoutes, { prefix: "/api/v1" });
 
   app.register(healthCheckRoute, { prefix: "/api/v1" });
+
+  app.register(accountRegistrationRoutes, { prefix: "/api/v1" });
 
   return app;
 }

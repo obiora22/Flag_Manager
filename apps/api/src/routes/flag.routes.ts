@@ -11,7 +11,7 @@ import {
   RawServerDefault,
   RouteGenericInterface,
 } from "fastify";
-import { FlagService } from "@db/services/flagService.ts";
+import { FlagService } from "@api/src/services/flagService.ts";
 import { BaseFlag, updateFlagSchema, baseFlagSchema } from "@schema/flag.schema.js";
 import z from "zod";
 

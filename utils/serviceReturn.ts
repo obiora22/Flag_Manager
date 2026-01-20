@@ -1,19 +1,17 @@
-import { narrowError } from "./narrowError";
+import { narrowError } from "./narrowError.ts";
 
-export const handleResults = <T>(result: T | null) => {
-  if (!result) {
-    return {
-      ok: false,
-      data: null,
-      error: "Resource not found",
-    } as const;
-  }
-
-  return {
-    ok: false,
-    data: result,
-    error: null,
-  } as const;
+export const handleResult = <T>(result: T | null) => {
+  return result
+    ? {
+        ok: true,
+        data: null,
+        error: null,
+      }
+    : {
+        ok: true,
+        data: result,
+        error: null,
+      };
 };
 
 export const handleError = (error: unknown) => {
@@ -21,5 +19,5 @@ export const handleError = (error: unknown) => {
     ok: false,
     data: null,
     error: narrowError(error),
-  } as const;
+  };
 };

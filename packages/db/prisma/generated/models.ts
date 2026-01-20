@@ -10,6 +10,7 @@
  */
 export type * from './models/AuditLog.ts'
 export type * from './models/User.ts'
+export type * from './models/Credential.ts'
 export type * from './models/Project.ts'
 export type * from './models/Flag.ts'
 export type * from './models/FlagEnvironment.ts'

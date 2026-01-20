@@ -1,11 +1,12 @@
 import { Prisma, PrismaClient } from "@db/prisma/generated/client";
-import { handleError, handleResults } from "@repo/utils/serviceReturn";
+import { handleError, handleResult } from "@repo/utils/serviceReturn";
 import { BaseFlag, UpdateFlag } from "@schema/flag.schema";
+
 export class FlagService {
   static async getFlags(dbClientInstance: PrismaClient) {
     try {
       const response = await dbClientInstance.flag.findMany();
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -18,7 +19,7 @@ export class FlagService {
           id,
         },
       });
-      return handleResults(flag);
+      return handleResult(flag);
     } catch (err) {
       return handleError(err);
     }
@@ -32,7 +33,7 @@ export class FlagService {
           defaultValue: data.defaultValue as Prisma.InputJsonValue,
         },
       });
-      return handleResults(response);
+      const r = handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -50,7 +51,7 @@ export class FlagService {
           defaultValue: data.defaultValue as Prisma.InputJsonValue,
         },
       });
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
@@ -60,7 +61,7 @@ export class FlagService {
       const response = await dbClientInstance.flag.delete({
         where: { id },
       });
-      return handleResults(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }

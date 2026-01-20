@@ -1,8 +1,8 @@
 import { Flag } from "@db/prisma/generated/client";
 import { JsonArray } from "@db/prisma/generated/internal/prismaNamespace";
-import { RulesSchema } from "@schema/flag.schema.js";
-import { baseRuleSchema } from "@schema/project.schema.js";
-import crypto from "crypto";
+import { RulesSchema } from "@schema/rule.schema.js";
+import { baseRuleSchema } from "@schema/project.schema";
+import { createHash } from "crypto";
 type Operator =
   | "equals"
   | "notEquals"
@@ -83,16 +83,10 @@ export const operatorFns: Record<Operator, OperatorFn> = {
     return matchTypes("number", userValue, ruleValue) && userValue;
   },
   startsWith: (userValue: any, ruleValue: any): boolean => {
-    return (
-      matchTypes("string", userValue, ruleValue) &&
-      ruleValue.startsWith(userValue)
-    );
+    return matchTypes("string", userValue, ruleValue) && ruleValue.startsWith(userValue);
   },
   endsWith: (userValue: any, ruleValue: any): boolean => {
-    return (
-      matchTypes("string", userValue, ruleValue) &&
-      ruleValue.endsWith(userValue)
-    );
+    return matchTypes("string", userValue, ruleValue) && ruleValue.endsWith(userValue);
   },
 };
 
@@ -102,17 +96,11 @@ const user: Record<string, unknown> = {
   bucket: 22.3798,
 };
 
-function checkConditions(
-  conditions: Condition[],
-  user: Record<string, unknown>
-) {
+function checkConditions(conditions: Condition[], user: Record<string, unknown>) {
   return conditions.length === 0
     ? true
     : conditions.every((condition) => {
-        return operatorFns[condition.operator](
-          user[condition.attribute],
-          condition.value
-        );
+        return operatorFns[condition.operator](user[condition.attribute], condition.value);
       });
 }
 
@@ -123,19 +111,12 @@ function processRollout(userId: string, flagKey: string, rollout: Rollout) {
 
 function getUserBucket(userId: string, flagKey: string) {
   const input = `${userId}${flagKey}`;
-  const hash = crypto
-    .createHash("sha2")
-    .update(input)
-    .digest("hex")
-    .slice(0, 8);
+  const hash = createHash("sha2").update(input).digest("hex").slice(0, 8);
   const hashInt = BigInt("OX" + hash);
   return Number(hashInt % 100n);
 }
 
-function RuleEngine(
-  rule: Rule,
-  user: Record<string, unknown> & { id: string }
-) {
+function RuleEngine(rule: Rule, user: Record<string, unknown> & { id: string }) {
   const { conditions, rollout, defaultValue } = rule;
 
   if (!conditions) return defaultValue;

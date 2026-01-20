@@ -12,5 +12,8 @@
     }
   },
   "author": "Obiora Anaedozie",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "zod": "^4.3.5"
+  }
 }
