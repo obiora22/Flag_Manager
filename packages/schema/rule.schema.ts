@@ -24,10 +24,10 @@ export const RolloutSchema = z.object({
 });
 
 export const RuleSchema = z.object({
-  id: z.string(),
+  key: z.string(),
   conditions: z.array(ConditionSchema).optional(),
   rollout: RolloutSchema.optional(),
-  serve: z.unknown().optional(),
+  serve: z.union([z.json(), z.null(), z.boolean()]),
 });
 
 export const RulesSchema = z.array(RuleSchema).default([]);

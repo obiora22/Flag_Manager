@@ -37,18 +37,20 @@ interface Condition {
 }
 
 export interface Rule {
-  id: string;
+  key: string;
   conditions?: Condition[];
   rollout?: Rollout;
   defaultValue?: ReturnValue;
+  serve: unknown;
 }
 
-const rule_0 = {
+const rule_0: Rule = {
   conditions: [
     { attribute: "country", operator: "equals", value: "CA" },
     { attribute: "role", operator: "equals", value: "ADMIN" },
   ],
   serve: false,
+  key: "",
 };
 
 const rule_1 = {
@@ -104,13 +106,13 @@ function checkConditions(conditions: Condition[], user: Record<string, unknown>)
       });
 }
 
-function processRollout(userId: string, flagKey: string, rollout: Rollout) {
-  const userBucket = getUserBucket(userId, flagKey);
+function processRollout(userId: string, rollout: Rollout) {
+  const userBucket = getUserBucket(userId);
   return userBucket <= rollout.percentage ? rollout.value : null;
 }
 
-function getUserBucket(userId: string, flagKey: string) {
-  const input = `${userId}${flagKey}`;
+function getUserBucket(userId: string) {
+  const input = `${userId}`;
   const hash = createHash("sha2").update(input).digest("hex").slice(0, 8);
   const hashInt = BigInt("OX" + hash);
   return Number(hashInt % 100n);
@@ -126,7 +128,7 @@ function RuleEngine(rule: Rule, user: Record<string, unknown> & { id: string }) 
   if (!conditionsPass) return rule.defaultValue;
 
   if (rollout && user) {
-    const result = processRollout(user.id, "api_v2", rollout);
+    const result = processRollout(user.id, rollout);
 
     return result ? result : rule.defaultValue;
   }
@@ -135,7 +137,7 @@ function RuleEngine(rule: Rule, user: Record<string, unknown> & { id: string }) 
 }
 
 // Resolve Prisma Json type with schema type
-function parseRules(json: unknown): Rule[] {
+function parseRules(json: unknown) {
   return RulesSchema.parse(json);
 }
 
@@ -149,12 +151,12 @@ function evaluateFlag(flag: Flag, user: any) {
     }
 
     if (rule.rollout) {
-      const userInRollout = processRollout(user.id, flag.key, rule.rollout);
+      const userInRollout = processRollout(user.id, rule.rollout);
       if (!userInRollout) continue;
     }
 
-    if (rule.defaultValue !== undefined) return rule.defaultValue;
+    if (rule.serve !== undefined) return rule.serve;
 
-    return flag.defaultValue;
+    return flag.serve;
   }
 }

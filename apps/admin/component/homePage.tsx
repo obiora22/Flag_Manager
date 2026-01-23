@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import {
   Flag,
   Zap,
@@ -15,7 +16,10 @@ import {
 
 export function HomePage() {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const session = useSession();
+  const { data } = session;
 
+  console.log({ data });
   const stats = [
     { label: "Active Flags", value: "127", change: "+12%", icon: Flag },
     { label: "Projects", value: "8", change: "+2", icon: Globe },
@@ -73,27 +77,23 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Header */}
       <header className="border-b border-slate-800/50 backdrop-blur-sm bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Feature Flags</h1>
                 <p className="text-sm text-slate-400">Production Organization</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <button className="px-4 py-2 text-slate-300 hover:text-white transition-colors">
-                Documentation
-              </button>
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                SC
-              </div>
+              {data?.user && (
+                <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  <p>{data?.user.firstname}</p>
+                </div>
+              )}
             </div>
+            <button onClick={() => signOut()}>Sign out</button>
           </div>
         </div>
       </header>
@@ -132,7 +132,7 @@ export function HomePage() {
               return (
                 <button
                   key={idx}
-                  onMouseEnter={() => setHoveredCard(0)}
+                  onMouseEnter={() => setHoveredCard(null)}
                   onMouseLeave={() => setHoveredCard(null)}
                   className="group relative bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 text-left hover:border-slate-600/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1"
                 >
@@ -141,7 +141,7 @@ export function HomePage() {
                   />
                   <div className="relative">
                     <div
-                      className={`w-12 h-12 bg-gradient-to-br ${action.color} rounded-lg flex items-center justify-center mb-4`}
+                      className={`w-12 h-12 bg-linear-to-br ${action.color} rounded-lg flex items-center justify-center mb-4`}
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
@@ -198,21 +198,21 @@ export function HomePage() {
 
         {/* Feature Highlights */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
+          <div className="bg-linear-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
             <BarChart3 className="w-8 h-8 text-blue-400 mb-3" />
             <h3 className="text-lg font-semibold text-white mb-2">Advanced Analytics</h3>
             <p className="text-sm text-slate-400">
               Track flag performance and user behavior with real-time insights.
             </p>
           </div>
-          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
+          <div className="bg-linear-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
             <Shield className="w-8 h-8 text-purple-400 mb-3" />
             <h3 className="text-lg font-semibold text-white mb-2">Enterprise Security</h3>
             <p className="text-sm text-slate-400">
               Role-based access control and comprehensive audit logging.
             </p>
           </div>
-          <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-6">
+          <div className="bg-linear-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-6">
             <Zap className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-white mb-2">Lightning Fast</h3>
             <p className="text-sm text-slate-400">

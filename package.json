@@ -17,7 +17,8 @@
     "build:admin": "npm --workspace apps/admin run build",
     "prisma:generate": "npm --workspace packages/db run generate",
     "prisma:migrate": "npm --workspace packages/db run migrate",
-    "prisma:db:push": "npm --workspace packages/db run push"
+    "prisma:db:push": "npm --workspace packages/db run push",
+    "prisma:db:seed": "npm --workspace packages/db run seed"
   },
   "author": "O. Anaedozie",
   "license": "ISC",

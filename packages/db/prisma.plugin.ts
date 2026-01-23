@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 
-import { prismaClientInstance } from "./lib/prismaClient";
+import { prismaClientInstance } from "./lib/prismaClient.ts";
 
 console.log("Prisma Plugin: ", process.env);
 export default fp(async (fastify) => {

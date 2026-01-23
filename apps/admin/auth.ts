@@ -6,9 +6,9 @@ import { getUserByEmail, getUserCredentials } from "./actions/users";
 declare module "next-auth" {
   interface Session {
     user: {
-      name: string;
+      firstname: string;
+      lastname: string;
       email: string;
-      password: string;
     } & DefaultSession["user"];
   }
 }
@@ -33,7 +33,7 @@ const nextAuth = NextAuth({
         console.log({ credentials });
         const { data: user } = await getUserCredentials(email);
 
-        console.log({ user });
+        console.log("AUTHORIZE", { user });
 
         if (!user) return null;
         const { credential } = user;
@@ -46,6 +46,22 @@ const nextAuth = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async signIn(ctx) {
+      console.log({ ctx });
+      return !!ctx?.user;
+    },
+    jwt(ctx) {
+      const { user, token } = ctx;
+      console.log("JWT", { ctx }, ctx?.token?.user);
+      if (user) token.user = user;
+      return token;
+    },
+    session(ctx) {
+      const { token, session } = ctx;
+      return { ...session, ...token };
+    },
+  },
   pages: {
     signIn: "/signIn",
   },
