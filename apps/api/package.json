@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "tsx --env-file=../../.env.development src/server.ts"
+    "dev": "tsx --env-file=./.env.development src/server.ts"
   },
   "keywords": [],
   "author": "",

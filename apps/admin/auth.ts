@@ -1,17 +1,50 @@
 import NextAuth, { type DefaultSession, Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compareHash } from "@admin/lib/hashAndCompare.ts";
-import { getUserByEmail, getUserCredentials } from "./actions/users";
+import { getUserCredentials } from "./actions/users";
+import { Role } from "@db/prisma/generated/client";
+
+interface ExtendedUser {
+  id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  memberships: {
+    org: {
+      name: string;
+    };
+    id: string;
+    role: Role;
+    userId: string;
+    orgId: string;
+  }[];
+}
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      firstname: string;
-      lastname: string;
-      email: string;
-    } & DefaultSession["user"];
+    user: ExtendedUser & DefaultSession["user"];
+    email: string;
+    activeOrgId: string;
+    activeRole: Role;
+  }
+
+  interface User extends ExtendedUser {
+    id: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    memberships: {
+      org: {
+        name: string;
+      };
+      id: string;
+      role: Role;
+      userId: string;
+      orgId: string;
+    }[];
   }
 }
+
 const nextAuth = NextAuth({
   providers: [
     Credentials({
@@ -28,19 +61,24 @@ const nextAuth = NextAuth({
         },
       },
       async authorize(credentials) {
-        const { password, email } = credentials as { email: string; password: string };
+        const userCredentials = credentials as { email: string; password: string };
 
-        console.log({ credentials });
-        const { data: user } = await getUserCredentials(email);
-
-        console.log("AUTHORIZE", { user });
+        const { data: user } = await getUserCredentials(userCredentials.email);
 
         if (!user) return null;
-        const { credential } = user;
-        const match = await compareHash(password, credential?.passwordHash);
 
-        console.log(user, { match });
-        if (match) return user;
+        const { credential } = user;
+        const match = await compareHash(userCredentials.password, credential?.passwordHash);
+
+        const { id, firstname, lastname, email, memberships } = user;
+        if (match)
+          return {
+            id,
+            firstname,
+            lastname,
+            email,
+            memberships,
+          };
 
         return null;
       },
@@ -52,9 +90,22 @@ const nextAuth = NextAuth({
       return !!ctx?.user;
     },
     jwt(ctx) {
-      const { user, token } = ctx;
-      console.log("JWT", { ctx }, ctx?.token?.user);
-      if (user) token.user = user;
+      const { user, token, trigger, session } = ctx;
+
+      if (user) {
+        token.user = user;
+
+        token.activeOrgId = user.memberships[0].orgId;
+        token.activeRole = user.memberships[0].role;
+        token.membership = user.memberships;
+      }
+
+      if (trigger === "update" && session?.activeOrgId && session?.activeRole) {
+        console.log("Token update triggered: " + token.activeOrgId + " " + token.activeRole);
+        token.activeOrgId = session.activeOrgId;
+        token.activeRole = session.activeRole;
+      }
+
       return token;
     },
     session(ctx) {

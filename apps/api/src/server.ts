@@ -6,11 +6,13 @@ import { projectRoutes } from "./routes/project.routes.ts";
 import { flagRoutes } from "./routes/flag.routes.ts";
 import { environmentRoutes } from "./routes/environment.routes.ts";
 
-import prismaPlugin from "@db/prisma.plugin.ts";
+import prismaPlugin from "@api/src/plugins/prisma.ts";
+import authPlugin from "@api/src/plugins/auth.ts";
 
 import { PrismaClient } from "@db/prisma/generated/client.ts";
 import { healthCheckRoute } from "./routes/healthCheck.routes.ts";
 import { accountRegistrationRoutes } from "./routes/account.routes.ts";
+import dashboardRoutes from "./routes/dashboard.routes.ts";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -23,15 +25,18 @@ function buildServer() {
     logger: true,
   });
 
-  // Register prisma
   app.register(prismaPlugin);
 
-  // middlewares
+  app.register(authPlugin);
+
+  /* Midldlewares */
   app.register(cors, {
     origin: "*",
   });
 
   app.register(helmet);
+
+  app.register(dashboardRoutes, { prefix: "/api/v1" });
 
   app.register(userRoutes, { prefix: "/api/v1" });
 
