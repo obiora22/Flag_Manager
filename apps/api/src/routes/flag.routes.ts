@@ -19,6 +19,7 @@ interface RequestProps extends RouteGenericInterface {
   Params: { id: string };
   Body: { body: BaseFlag };
 }
+
 export async function flagRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
   fastify.get("/flags", {
     preHandler() {},

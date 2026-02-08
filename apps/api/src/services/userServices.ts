@@ -20,6 +20,16 @@ type ServiceResult<T> =
 
 const userInclude = {
   credential: true,
+  memberships: {
+    include: {
+      org: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
 } satisfies UserInclude;
 
 export type UserIncludeCredentials = UserGetPayload<{ include: typeof userInclude }>;
@@ -82,9 +92,7 @@ export class UserServices {
     try {
       const user = await prismaClientInstance.user.findUnique({
         where: { email },
-        include: {
-          credential: true,
-        },
+        include: userInclude,
       });
 
       return {
