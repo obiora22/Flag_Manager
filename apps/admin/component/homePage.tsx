@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import {
   Flag,
   Zap,
@@ -13,18 +13,27 @@ import {
   ChevronRight,
   Activity,
 } from "lucide-react";
+import { OrgSwitcher } from "./orgSwitcher";
+import { DashboardData } from "@api/src/routes/dashboard.routes";
+import { Session } from "next-auth";
+import Link from "next/link";
 
-export function HomePage() {
+interface Props {
+  dashboardData: DashboardData;
+  session: Session;
+}
+export function Dashboard({ dashboardData, session }: Props) {
   const [hoveredCard, setHoveredCard] = useState(null);
-  const session = useSession();
-  const { data } = session;
 
-  console.log({ data });
+  const { totalFlags, totalMembership, totalProjects } = dashboardData;
+
+  const { user } = session;
+
   const stats = [
-    { label: "Active Flags", value: "127", change: "+12%", icon: Flag },
-    { label: "Projects", value: "8", change: "+2", icon: Globe },
-    { label: "Team Members", value: "24", change: "+3", icon: Users },
-    { label: "Evaluations/day", value: "2.4M", change: "+18%", icon: Activity },
+    { label: "Active Flags", value: totalFlags, change: "+12%", icon: Flag },
+    { label: "Projects", value: totalProjects, change: "+2", icon: Globe },
+    { label: "Team Members", value: totalMembership, change: "+3", icon: Users },
+    // { label: "Evaluations/day", value: "2.4M", change: "+18%", icon: Activity },
   ];
 
   const quickActions = [
@@ -87,9 +96,9 @@ export function HomePage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {data?.user && (
-                <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  <p>{data?.user.firstname}</p>
+              {user && (
+                <div className="w-30 p-2 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  <p>{user.firstname[0].toUpperCase() + ". " + user.lastname}</p>
                 </div>
               )}
             </div>
@@ -99,6 +108,9 @@ export function HomePage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-8 py-12">
+        <div className="max-w-7xlmx-auto pb-8 flex items-center justify-between">
+          <OrgSwitcher />
+        </div>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {stats.map((stat, idx) => {
@@ -112,9 +124,9 @@ export function HomePage() {
                   <div className="w-12 h-12 bg-slate-700/50 rounded-lg flex items-center justify-center">
                     <Icon className="w-6 h-6 text-blue-400" />
                   </div>
-                  <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
+                  {/* <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
                     {stat.change}
-                  </span>
+                  </span> */}
                 </div>
                 <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
                 <p className="text-sm text-slate-400">{stat.label}</p>
@@ -148,12 +160,14 @@ export function HomePage() {
                     <h3 className="text-lg font-semibold text-white mb-2">{action.title}</h3>
                     <p className="text-sm text-slate-400 mb-4">{action.description}</p>
                     <div className="flex items-center text-blue-400 text-sm font-medium">
-                      Get started
-                      <ArrowRight
-                        className={`w-4 h-4 ml-1 transition-transform duration-300 ${
-                          hoveredCard === idx ? "translate-x-1" : ""
-                        }`}
-                      />
+                      <Link href="/projects">
+                        Get started
+                        <ArrowRight
+                          className={`w-4 h-4 ml-1 transition-transform duration-300 ${
+                            hoveredCard === idx ? "translate-x-1" : ""
+                          }`}
+                        />
+                      </Link>
                     </div>
                   </div>
                 </button>
