@@ -1,8 +1,6 @@
 "use client";
-
-import { accountRegistration } from "@admin/actions/registeration";
 import { signIn } from "next-auth/react";
-import { useState, useActionState } from "react";
+import React, { useState } from "react";
 
 const initialState = {
   email: "",
@@ -11,11 +9,6 @@ const initialState = {
 
 export default function SignIn() {
   const [form, setForm] = useState(initialState);
-  const [state, formAction] = useActionState(accountRegistration, {
-    ok: false,
-    data: null,
-    error: null,
-  });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -23,22 +16,18 @@ export default function SignIn() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     await signIn("credentials", {
-      // Use the 'credentials' provider ID if using credentials
       email: form.email,
       password: form.password,
-      callbackUrl: "/", // Redirect path after successful sign-in
+      redirectTo: "/",
     });
   };
-
-  console.log({ state });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Create an Account</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Log In</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input

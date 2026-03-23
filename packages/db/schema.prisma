@@ -98,7 +98,7 @@ model FlagEnvironment {
   overrides   Json // environment-specific override: defaultValue or rules
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
-  featureFlag Flag                @relation(fields: [flagId], references: [id])
+  flag        Flag                @relation(fields: [flagId], references: [id])
   flagId      String
 }
 

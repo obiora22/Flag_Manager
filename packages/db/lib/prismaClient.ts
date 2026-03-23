@@ -1,10 +1,9 @@
-import { PrismaClient, Prisma } from "@db/prisma/generated/client";
+import { PrismaClient, Prisma } from "@db/prisma/generated/client.ts";
 import {
   LogDefinition,
   LogLevel,
-} from "@db/prisma/generated/internal/prismaNamespace";
+} from "@db/prisma/generated/internal/prismaNamespace.ts";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { checkHealth } from "@db/lib/healthCheck";
 
 const log: (LogLevel | LogDefinition)[] = [
   {
@@ -15,7 +14,7 @@ const log: (LogLevel | LogDefinition)[] = [
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
-  schema: "public",
+  // schema: "public",
 });
 
 const singleton = () => new PrismaClient({ adapter, log });

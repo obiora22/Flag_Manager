@@ -8,6 +8,11 @@ export interface AccountRegistrationState {
   error: string | null;
 }
 
+const API_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.DEVELOPMENT_API_URL
+    : process.env.PRODUCTION_API_URL;
+
 export async function accountRegistration(
   prevState: AccountRegistrationState,
   payload: FormData
@@ -26,7 +31,7 @@ export async function accountRegistration(
   let response;
 
   try {
-    response = await fetch(`${process.env.DEVELOPMENT_API_URL}/accounts`, {
+    response = await fetch(`${API_URL}/accounts`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

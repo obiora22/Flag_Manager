@@ -4,7 +4,7 @@ import { compareHash } from "@admin/lib/hashAndCompare.ts";
 import { getUserCredentials } from "./actions/users";
 import { Role } from "@db/prisma/generated/client";
 
-interface ExtendedUser {
+export interface ExtendedUser {
   id: string;
   email: string;
   firstname: string;

@@ -23,11 +23,13 @@ export const RolloutSchema = z.object({
   value: z.unknown(),
 });
 
-export const RuleSchema = z.object({
+export const baseRuleSchema = z.object({
   key: z.string(),
   conditions: z.array(ConditionSchema).optional(),
   rollout: RolloutSchema.optional(),
   serve: z.union([z.json(), z.null(), z.boolean()]),
 });
 
-export const RulesSchema = z.array(RuleSchema).default([]);
+export const RulesSchema = z.array(baseRuleSchema).default([]);
+
+export type Rule = z.infer<typeof baseRuleSchema>;

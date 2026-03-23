@@ -1,17 +1,14 @@
 "use server";
-import { auth } from "@admin/auth";
+
 import { Dashboard } from "@admin/component/homePage";
 import { apiFetchClient } from "@admin/lib/fetchClient";
-import { DDATA } from "@api/src/routes/dashboard.routes";
+import { DashboardData } from "@api/src/routes/dashboard.routes";
+import { checkUserSession } from "@admin/lib/auth-helpers.ts";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await checkUserSession()
 
-  if (!session) {
-    return <h1>Access denied</h1>;
-  }
-
-  const { data, error } = await apiFetchClient<DDATA>("/dashboard");
+  const { data, error } = await apiFetchClient<DashboardData>("/dashboard");
 
   if (error) {
     return <p>Data fetch failed. Please try again later.</p>;

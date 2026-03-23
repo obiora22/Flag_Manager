@@ -13,15 +13,26 @@ import {
   updateProjectSchema,
 } from "@schema/project.schema.js";
 import z from "zod";
+
 interface RequestParams {
   Params: {
     id: string;
   };
 }
-export async function projectRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+
+export async function projectRoutes(
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions
+) {
   fastify.get("/projects", {
-    handler: async (request: FastifyRequest, reply: FastifyReply) => {
-      const { ok, data, error } = await ProjectServices.getProjects(fastify.prisma);
+    handler: async (
+      request: FastifyRequest<{ Querystring: { activeOrgId: string } }>,
+      reply: FastifyReply
+    ) => {
+      const { ok, data, error } = await ProjectServices.getProjects(
+        fastify.prisma,
+        request.query.activeOrgId
+      );
       return { ok, data, error };
     },
   });
@@ -29,7 +40,10 @@ export async function projectRoutes(fastify: FastifyInstance, options: FastifyPl
   fastify.get("/projects/:id", {
     async handler(request: FastifyRequest<RequestParams>, reply: FastifyReply) {
       const { id } = request.params;
-      const { ok, data, error } = await ProjectServices.getProject(fastify.prisma, id);
+      const { ok, data, error } = await ProjectServices.getProject(
+        fastify.prisma,
+        id
+      );
       return {
         ok,
         data,
@@ -38,7 +52,11 @@ export async function projectRoutes(fastify: FastifyInstance, options: FastifyPl
     },
   });
   fastify.post("/projects", {
-    async preHandler(request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) {
+    async preHandler(
+      request: FastifyRequest,
+      reply: FastifyReply,
+      done: HookHandlerDoneFunction
+    ) {
       const body = request.body as BaseProject;
       const { data, error } = baseProjectSchema.safeParse(body);
       if (error)
@@ -55,14 +73,21 @@ export async function projectRoutes(fastify: FastifyInstance, options: FastifyPl
     },
     async handler(request: FastifyRequest, reply: FastifyReply) {
       const formData = request.baseProject;
-      const { ok, data, error } = await ProjectServices.createProject(fastify.prisma, formData);
+      const { ok, data, error } = await ProjectServices.createProject(
+        fastify.prisma,
+        formData
+      );
 
       return reply.send({ ok, data, error });
     },
   });
 
   fastify.put("/projects/:id", {
-    async preHandler(request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) {
+    async preHandler(
+      request: FastifyRequest,
+      reply: FastifyReply,
+      done: HookHandlerDoneFunction
+    ) {
       const body = request.body as BaseProject;
       const { data, error } = baseProjectSchema.safeParse(body);
       if (error)
@@ -80,7 +105,11 @@ export async function projectRoutes(fastify: FastifyInstance, options: FastifyPl
     async handler(request: FastifyRequest<RequestParams>, reply: FastifyReply) {
       const formData = request.baseProject;
       const { id } = request.params;
-      const { ok, data, error } = await ProjectServices.updateProject(fastify.prisma, id, formData);
+      const { ok, data, error } = await ProjectServices.updateProject(
+        fastify.prisma,
+        id,
+        formData
+      );
 
       return reply.send({ ok, data, error });
     },

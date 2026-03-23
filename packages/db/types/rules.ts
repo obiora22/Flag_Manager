@@ -1,10 +1,11 @@
-import { Flag } from "@db/prisma/generated/client";
-import { JsonArray } from "@db/prisma/generated/internal/prismaNamespace";
+import { Flag } from "@db/prisma/generated/client.ts";
+import { JsonArray } from "@db/prisma/generated/internal/prismaNamespace.js";
 import { RulesSchema } from "@schema/rule.schema.js";
-import { baseRuleSchema } from "@schema/project.schema";
 import { createHash } from "crypto";
+
 type Operator =
   | "equals"
+  | "greaterThan"
   | "notEquals"
   | "contains"
   | "notContains"
@@ -13,7 +14,8 @@ type Operator =
   | "lt"
   | "lte"
   | "startsWith"
-  | "endsWith";
+  | "endsWith"
+  | "in";
 
 type ReturnValue = string | number | boolean | JSON;
 
@@ -24,13 +26,13 @@ interface EnvironmentOverrides {
   defaultValue: ReturnValue;
   rules?: Rule;
 }
+
 interface Rollout {
   attribute: string;
   percentage: number;
-  value: unknown;
 }
 
-interface Condition {
+export interface Condition {
   attribute: string;
   operator: Operator;
   value: unknown;
@@ -40,7 +42,6 @@ export interface Rule {
   key: string;
   conditions?: Condition[];
   rollout?: Rollout;
-  defaultValue?: ReturnValue;
   serve: unknown;
 }
 
@@ -85,10 +86,22 @@ export const operatorFns: Record<Operator, OperatorFn> = {
     return matchTypes("number", userValue, ruleValue) && userValue;
   },
   startsWith: (userValue: any, ruleValue: any): boolean => {
-    return matchTypes("string", userValue, ruleValue) && ruleValue.startsWith(userValue);
+    return (
+      matchTypes("string", userValue, ruleValue) &&
+      ruleValue.startsWith(userValue)
+    );
   },
   endsWith: (userValue: any, ruleValue: any): boolean => {
-    return matchTypes("string", userValue, ruleValue) && ruleValue.endsWith(userValue);
+    return (
+      matchTypes("string", userValue, ruleValue) &&
+      ruleValue.endsWith(userValue)
+    );
+  },
+  greaterThan: function (userValue: any, ruleValue: any): boolean {
+    throw new Error("Function not implemented.");
+  },
+  in: function (userValue: any, ruleValue: any): boolean {
+    throw new Error("Function not implemented.");
   },
 };
 
@@ -98,17 +111,23 @@ const user: Record<string, unknown> = {
   bucket: 22.3798,
 };
 
-function checkConditions(conditions: Condition[], user: Record<string, unknown>) {
+function checkConditions(
+  conditions: Condition[],
+  user: Record<string, unknown>
+) {
   return conditions.length === 0
     ? true
     : conditions.every((condition) => {
-        return operatorFns[condition.operator](user[condition.attribute], condition.value);
+        return operatorFns[condition.operator](
+          user[condition.attribute],
+          condition.value
+        );
       });
 }
 
 function processRollout(userId: string, rollout: Rollout) {
   const userBucket = getUserBucket(userId);
-  return userBucket <= rollout.percentage ? rollout.value : null;
+  return userBucket <= rollout.percentage;
 }
 
 function getUserBucket(userId: string) {
@@ -118,25 +137,28 @@ function getUserBucket(userId: string) {
   return Number(hashInt % 100n);
 }
 
-function RuleEngine(rule: Rule, user: Record<string, unknown> & { id: string }) {
-  const { conditions, rollout, defaultValue } = rule;
+function RuleEngine(
+  rule: Rule,
+  user: Record<string, unknown> & { id: string }
+) {
+  const { conditions, rollout, serve } = rule;
 
-  if (!conditions) return defaultValue;
+  if (!conditions) return serve;
 
   const conditionsPass = checkConditions(conditions, user);
 
-  if (!conditionsPass) return rule.defaultValue;
+  if (!conditionsPass) return serve;
 
   if (rollout && user) {
     const result = processRollout(user.id, rollout);
 
-    return result ? result : rule.defaultValue;
+    return result ? result : rule.serve;
   }
 
-  return rule.defaultValue;
+  return rule.serve;
 }
 
-// Resolve Prisma Json type with schema type
+// Resolve Prisma JSON type with a schema type
 function parseRules(json: unknown) {
   return RulesSchema.parse(json);
 }
@@ -157,6 +179,6 @@ function evaluateFlag(flag: Flag, user: any) {
 
     if (rule.serve !== undefined) return rule.serve;
 
-    return flag.serve;
+    return flag.defaultValue;
   }
 }

@@ -22,14 +22,16 @@ export const baseFlagSchema = z.object({
   // environments: z.array(EnvironmentSchema).optional(),
 });
 
-export const updateFlagSchema = z.object({
-  key: z.string().min(1).max(100).optional(),
-  description: z.string().min(1).max(100),
-  rules: RulesSchema,
-  returnValueType: z.enum(ReturnValueType),
-  defaultValue: z.json(),
-  archived: z.boolean().optional(),
-});
+export const updateFlagSchema = baseFlagSchema.extend({ id: z.string() });
+
+// export const updateFlagSchema = z.object({
+//   key: z.string().min(1).max(100).optional(),
+//   description: z.string().min(1).max(100),
+//   rules: RulesSchema,
+//   returnValueType: z.enum(ReturnValueType),
+//   defaultValue: z.json(),
+//   archived: z.boolean().optional(),
+// });
 
 export type BaseFlag = z.infer<typeof baseFlagSchema>;
 export type UpdateFlag = z.infer<typeof updateFlagSchema>;

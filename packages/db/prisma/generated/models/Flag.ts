@@ -298,7 +298,7 @@ export type FlagCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFlagsInput
-  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFlagInput
   audits?: Prisma.AuditLogCreateNestedManyWithoutFlagInput
 }
 
@@ -313,7 +313,7 @@ export type FlagUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
-  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFlagInput
   audits?: Prisma.AuditLogUncheckedCreateNestedManyWithoutFlagInput
 }
 
@@ -328,7 +328,7 @@ export type FlagUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFlagsNestedInput
-  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFlagNestedInput
   audits?: Prisma.AuditLogUpdateManyWithoutFlagNestedInput
 }
 
@@ -343,7 +343,7 @@ export type FlagUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFlagNestedInput
   audits?: Prisma.AuditLogUncheckedUpdateManyWithoutFlagNestedInput
 }
 
@@ -536,7 +536,7 @@ export type FlagCreateWithoutAuditsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFlagsInput
-  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFlagInput
 }
 
 export type FlagUncheckedCreateWithoutAuditsInput = {
@@ -550,7 +550,7 @@ export type FlagUncheckedCreateWithoutAuditsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
-  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFlagInput
 }
 
 export type FlagCreateOrConnectWithoutAuditsInput = {
@@ -580,7 +580,7 @@ export type FlagUpdateWithoutAuditsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFlagsNestedInput
-  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFlagNestedInput
 }
 
 export type FlagUncheckedUpdateWithoutAuditsInput = {
@@ -594,7 +594,7 @@ export type FlagUncheckedUpdateWithoutAuditsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFlagNestedInput
 }
 
 export type FlagCreateWithoutProjectInput = {
@@ -607,7 +607,7 @@ export type FlagCreateWithoutProjectInput = {
   archived?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFlagInput
   audits?: Prisma.AuditLogCreateNestedManyWithoutFlagInput
 }
 
@@ -621,7 +621,7 @@ export type FlagUncheckedCreateWithoutProjectInput = {
   archived?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFeatureFlagInput
+  environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFlagInput
   audits?: Prisma.AuditLogUncheckedCreateNestedManyWithoutFlagInput
 }
 
@@ -761,7 +761,7 @@ export type FlagUpdateWithoutProjectInput = {
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUpdateManyWithoutFlagNestedInput
   audits?: Prisma.AuditLogUpdateManyWithoutFlagNestedInput
 }
 
@@ -775,7 +775,7 @@ export type FlagUncheckedUpdateWithoutProjectInput = {
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagNestedInput
+  environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFlagNestedInput
   audits?: Prisma.AuditLogUncheckedUpdateManyWithoutFlagNestedInput
 }
 

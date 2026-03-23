@@ -9,14 +9,18 @@ export interface ApiFetchResult<T> {
 
 export async function apiFetchClient<T>(
   path: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<ApiFetchResult<T>> {
   const API_URL = process.env.DEVELOPMENT_API_URL;
   const AUTH_SECRET = process.env.AUTH_SECRET;
   const session = await auth();
-
+  console.log(`Fetching \`${API_URL}${path}\`...`);
   if (!AUTH_SECRET || !API_URL)
-    return { ok: false, data: null, error: "Request failed: Missing environment variable(s)" };
+    return {
+      ok: false,
+      data: null,
+      error: "Request failed: Missing environment variable(s)",
+    };
 
   if (!session) {
     return {
@@ -33,7 +37,7 @@ export async function apiFetchClient<T>(
       memberships: session.user.memberships,
     },
     AUTH_SECRET,
-    { expiresIn: 30 * 24 * 60 },
+    { expiresIn: 30 * 24 * 60 }
   );
 
   const response = await fetch(`${API_URL}${path}`, {
@@ -44,8 +48,10 @@ export async function apiFetchClient<T>(
       ...options.headers,
     },
   });
+  console.log(response);
 
-  if (!response.ok) return { ok: response.ok, data: null, error: await response.text() };
+  if (!response.ok)
+    return { ok: response.ok, data: null, error: await response.text() };
 
   return await response.json();
 }

@@ -1,12 +1,17 @@
-import { Prisma, PrismaClient } from "@db/prisma/generated/client";
-import { handleError, handleResult } from "@repo/utils/serviceReturn";
-import { BaseFlag, UpdateFlag } from "@schema/flag.schema";
+import { Prisma, PrismaClient } from "@db/prisma/generated/client.ts";
+import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
+import { BaseFlag, UpdateFlag } from "@schema/flag.schema.ts";
 
 export class FlagService {
-  static async getFlags(dbClientInstance: PrismaClient) {
+  static async getFlags(dbClientInstance: PrismaClient, projectId: string) {
     try {
-      const response = await dbClientInstance.flag.findMany();
-      return handleResult(response);
+      const flags = await dbClientInstance.flag.findMany({
+        where: {
+          projectId,
+        },
+      });
+
+      return handleResult(flags);
     } catch (err) {
       return handleError(err);
     }
@@ -24,6 +29,7 @@ export class FlagService {
       return handleError(err);
     }
   }
+
   static async createFlag(dbClientInstance: PrismaClient, data: BaseFlag) {
     try {
       const response = await dbClientInstance.flag.create({
@@ -33,11 +39,12 @@ export class FlagService {
           defaultValue: data.defaultValue as Prisma.InputJsonValue,
         },
       });
-      const r = handleResult(response);
+      return handleResult(response);
     } catch (err) {
       return handleError(err);
     }
   }
+
   static async updateFlag(dbClientInstance: PrismaClient, data: UpdateFlag) {
     const { id, ...payload } = data;
     try {
@@ -56,6 +63,7 @@ export class FlagService {
       return handleError(err);
     }
   }
+
   static async deleteFlag(dbClientInstance: PrismaClient, id: string) {
     try {
       const response = await dbClientInstance.flag.delete({

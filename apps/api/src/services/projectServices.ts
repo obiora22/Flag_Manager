@@ -1,17 +1,54 @@
-import { prismaClientInstance } from "@db/lib/prismaClient.ts";
 import { Project, PrismaClient } from "@db/prisma/generated/client.ts";
-// import { PrismaClient } from "@prisma/client";
+import {
+  ProjectGetPayload,
+  ProjectInclude,
+} from "@db/prisma/generated/models.ts";
+
 import { narrowError } from "@repo/utils/narrowError.ts";
 import { handleResult, handleError } from "@repo/utils/serviceReturn.ts";
 import { BaseProject, UpdateProject } from "@schema/project.schema.ts";
+import { includes } from "zod";
+
+const projectInclude = {
+  users: true,
+  flags: {
+    include: {
+      environments: true,
+    },
+  },
+} satisfies ProjectInclude;
+
+export type ProjectData = ProjectGetPayload<{
+  include: typeof projectInclude;
+}> & {
+  userCount: number;
+  flagCount: number;
+};
 
 export class ProjectServices {
-  static async getProjects(dbClientInstance: PrismaClient) {
+  static async getProjects(dbClientInstance: PrismaClient, orgId: string) {
     try {
-      const projects = await dbClientInstance.project.findMany();
+      const projects = await dbClientInstance.project.findMany({
+        where: {
+          organizationId: orgId,
+        },
+        include: projectInclude,
+      });
+      const transformData = projects.map((project) => {
+        const userCount = project.users.length;
+        const flagCount = project.flags.length;
+
+        return {
+          ...project,
+          userCount,
+          flagCount,
+        };
+      });
+
+      console.log({ transformData });
       return {
         ok: true,
-        data: projects,
+        data: transformData,
         error: null,
       } as const;
     } catch (err) {
@@ -31,7 +68,10 @@ export class ProjectServices {
     }
   }
 
-  static async createProject(dbClientInstance: PrismaClient, formBody: BaseProject) {
+  static async createProject(
+    dbClientInstance: PrismaClient,
+    formBody: BaseProject
+  ) {
     try {
       const response = await dbClientInstance.project.create({
         data: formBody,
@@ -42,7 +82,12 @@ export class ProjectServices {
       return handleError(err);
     }
   }
-  static async updateProject(dbClientInstance: PrismaClient, id: string, formBody: BaseProject) {
+
+  static async updateProject(
+    dbClientInstance: PrismaClient,
+    id: string,
+    formBody: BaseProject
+  ) {
     console.log({ formBody });
     try {
       const response = await dbClientInstance.project.update({

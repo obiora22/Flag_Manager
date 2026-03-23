@@ -24,12 +24,13 @@ const baseFlagEnvironment = z.object({
   overrides: z.json(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  fladId: z.uuid(),
+  flagId: z.uuid(),
 });
 
 export const baseProjectSchema = z.object({
   name: z.string(),
   slug: z.string(),
+  organizationId: z.string(),
   // flags: z.array(baseFlagSchema),
 });
 

@@ -12,19 +12,35 @@ import {
   RouteGenericInterface,
 } from "fastify";
 import { FlagService } from "@api/src/services/flagService.ts";
-import { BaseFlag, updateFlagSchema, baseFlagSchema } from "@schema/flag.schema.js";
+import {
+  BaseFlag,
+  updateFlagSchema,
+  baseFlagSchema,
+} from "@schema/flag.schema.js";
 import z from "zod";
 
 interface RequestProps extends RouteGenericInterface {
   Params: { id: string };
   Body: { body: BaseFlag };
+  QueryString: { projectId: string };
 }
 
-export async function flagRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+export async function flagRoutes(
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions
+) {
   fastify.get("/flags", {
-    preHandler() {},
-    async handler(request: FastifyRequest, reply: FastifyReply) {
-      const { ok, data, error } = await FlagService.getFlags(fastify.prisma);
+    async handler(
+      request: FastifyRequest<{ Querystring: { projectId: string } }>,
+      reply: FastifyReply
+    ) {
+      const { ok, data, error } = await FlagService.getFlags(
+        fastify.prisma,
+        request.query.projectId
+      );
+
+      console.log({ data }, { projectId: request.query.projectId });
+
       return reply.send({
         ok,
         data,
@@ -34,7 +50,10 @@ export async function flagRoutes(fastify: FastifyInstance, options: FastifyPlugi
   });
   fastify.get("/flags/:id", {
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const { ok, data, error } = await FlagService.getFlag(fastify.prisma, request.params.id);
+      const { ok, data, error } = await FlagService.getFlag(
+        fastify.prisma,
+        request.params.id
+      );
       return reply.send({ ok, data, error });
     },
   });
@@ -54,7 +73,10 @@ export async function flagRoutes(fastify: FastifyInstance, options: FastifyPlugi
       done();
     },
     async handler(request: FastifyRequest, reply: FastifyReply) {
-      const { ok, data, error } = await FlagService.createFlag(fastify.prisma, request.baseFlag);
+      const { ok, data, error } = await FlagService.createFlag(
+        fastify.prisma,
+        request.baseFlag
+      );
       return reply.send({
         ok,
         data,
@@ -78,13 +100,19 @@ export async function flagRoutes(fastify: FastifyInstance, options: FastifyPlugi
       done();
     },
     async handler(request: FastifyRequest, reply: FastifyReply) {
-      const response = await FlagService.updateFlag(fastify.prisma, request.updateFlag);
+      const response = await FlagService.updateFlag(
+        fastify.prisma,
+        request.updateFlag
+      );
     },
   });
   fastify.delete("/flags/:id", {
     preHandler() {},
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const {} = await FlagService.deleteFlag(fastify.prisma, request.params.id);
+      const {} = await FlagService.deleteFlag(
+        fastify.prisma,
+        request.params.id
+      );
     },
   });
 }

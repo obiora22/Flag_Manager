@@ -1,7 +1,8 @@
 import { narrowError } from "./narrowError.ts";
 
 export const handleResult = <T>(result: T | null) => {
-  return result
+  console.log({ result }, "HANDLER");
+  return result === null
     ? {
         ok: true,
         data: null,

@@ -186,7 +186,7 @@ export type FlagEnvironmentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"FlagEnvironment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlagEnvironment"> | Date | string
   flagId?: Prisma.StringFilter<"FlagEnvironment"> | string
-  featureFlag?: Prisma.XOR<Prisma.FlagScalarRelationFilter, Prisma.FlagWhereInput>
+  flag?: Prisma.XOR<Prisma.FlagScalarRelationFilter, Prisma.FlagWhereInput>
 }
 
 export type FlagEnvironmentOrderByWithRelationInput = {
@@ -196,7 +196,7 @@ export type FlagEnvironmentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   flagId?: Prisma.SortOrder
-  featureFlag?: Prisma.FlagOrderByWithRelationInput
+  flag?: Prisma.FlagOrderByWithRelationInput
 }
 
 export type FlagEnvironmentWhereUniqueInput = Prisma.AtLeast<{
@@ -209,7 +209,7 @@ export type FlagEnvironmentWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"FlagEnvironment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlagEnvironment"> | Date | string
   flagId?: Prisma.StringFilter<"FlagEnvironment"> | string
-  featureFlag?: Prisma.XOR<Prisma.FlagScalarRelationFilter, Prisma.FlagWhereInput>
+  flag?: Prisma.XOR<Prisma.FlagScalarRelationFilter, Prisma.FlagWhereInput>
 }, "id">
 
 export type FlagEnvironmentOrderByWithAggregationInput = {
@@ -242,7 +242,7 @@ export type FlagEnvironmentCreateInput = {
   overrides: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
-  featureFlag: Prisma.FlagCreateNestedOneWithoutEnvironmentsInput
+  flag: Prisma.FlagCreateNestedOneWithoutEnvironmentsInput
 }
 
 export type FlagEnvironmentUncheckedCreateInput = {
@@ -260,7 +260,7 @@ export type FlagEnvironmentUpdateInput = {
   overrides?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  featureFlag?: Prisma.FlagUpdateOneRequiredWithoutEnvironmentsNestedInput
+  flag?: Prisma.FlagUpdateOneRequiredWithoutEnvironmentsNestedInput
 }
 
 export type FlagEnvironmentUncheckedUpdateInput = {
@@ -333,45 +333,45 @@ export type FlagEnvironmentMinOrderByAggregateInput = {
   flagId?: Prisma.SortOrder
 }
 
-export type FlagEnvironmentCreateNestedManyWithoutFeatureFlagInput = {
-  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput> | Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput[]
-  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput[]
-  createMany?: Prisma.FlagEnvironmentCreateManyFeatureFlagInputEnvelope
+export type FlagEnvironmentCreateNestedManyWithoutFlagInput = {
+  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput> | Prisma.FlagEnvironmentCreateWithoutFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput[]
+  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput[]
+  createMany?: Prisma.FlagEnvironmentCreateManyFlagInputEnvelope
   connect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
 }
 
-export type FlagEnvironmentUncheckedCreateNestedManyWithoutFeatureFlagInput = {
-  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput> | Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput[]
-  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput[]
-  createMany?: Prisma.FlagEnvironmentCreateManyFeatureFlagInputEnvelope
+export type FlagEnvironmentUncheckedCreateNestedManyWithoutFlagInput = {
+  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput> | Prisma.FlagEnvironmentCreateWithoutFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput[]
+  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput[]
+  createMany?: Prisma.FlagEnvironmentCreateManyFlagInputEnvelope
   connect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
 }
 
-export type FlagEnvironmentUpdateManyWithoutFeatureFlagNestedInput = {
-  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput> | Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput[]
-  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput[]
-  upsert?: Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFeatureFlagInput[]
-  createMany?: Prisma.FlagEnvironmentCreateManyFeatureFlagInputEnvelope
+export type FlagEnvironmentUpdateManyWithoutFlagNestedInput = {
+  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput> | Prisma.FlagEnvironmentCreateWithoutFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput[]
+  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput[]
+  upsert?: Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFlagInput | Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFlagInput[]
+  createMany?: Prisma.FlagEnvironmentCreateManyFlagInputEnvelope
   set?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   disconnect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   delete?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   connect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
-  update?: Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFeatureFlagInput[]
-  updateMany?: Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFeatureFlagInput[]
+  update?: Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFlagInput | Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFlagInput[]
+  updateMany?: Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFlagInput | Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFlagInput[]
   deleteMany?: Prisma.FlagEnvironmentScalarWhereInput | Prisma.FlagEnvironmentScalarWhereInput[]
 }
 
-export type FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagNestedInput = {
-  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput> | Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput[]
-  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput[]
-  upsert?: Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFeatureFlagInput[]
-  createMany?: Prisma.FlagEnvironmentCreateManyFeatureFlagInputEnvelope
+export type FlagEnvironmentUncheckedUpdateManyWithoutFlagNestedInput = {
+  create?: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput> | Prisma.FlagEnvironmentCreateWithoutFlagInput[] | Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput[]
+  connectOrCreate?: Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput | Prisma.FlagEnvironmentCreateOrConnectWithoutFlagInput[]
+  upsert?: Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFlagInput | Prisma.FlagEnvironmentUpsertWithWhereUniqueWithoutFlagInput[]
+  createMany?: Prisma.FlagEnvironmentCreateManyFlagInputEnvelope
   set?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   disconnect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   delete?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
   connect?: Prisma.FlagEnvironmentWhereUniqueInput | Prisma.FlagEnvironmentWhereUniqueInput[]
-  update?: Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFeatureFlagInput[]
-  updateMany?: Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFeatureFlagInput | Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFeatureFlagInput[]
+  update?: Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFlagInput | Prisma.FlagEnvironmentUpdateWithWhereUniqueWithoutFlagInput[]
+  updateMany?: Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFlagInput | Prisma.FlagEnvironmentUpdateManyWithWhereWithoutFlagInput[]
   deleteMany?: Prisma.FlagEnvironmentScalarWhereInput | Prisma.FlagEnvironmentScalarWhereInput[]
 }
 
@@ -379,7 +379,7 @@ export type EnumFlagEnvironmentTypeFieldUpdateOperationsInput = {
   set?: $Enums.FlagEnvironmentType
 }
 
-export type FlagEnvironmentCreateWithoutFeatureFlagInput = {
+export type FlagEnvironmentCreateWithoutFlagInput = {
   id?: string
   environment: $Enums.FlagEnvironmentType
   overrides: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -387,7 +387,7 @@ export type FlagEnvironmentCreateWithoutFeatureFlagInput = {
   updatedAt?: Date | string
 }
 
-export type FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput = {
+export type FlagEnvironmentUncheckedCreateWithoutFlagInput = {
   id?: string
   environment: $Enums.FlagEnvironmentType
   overrides: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -395,30 +395,30 @@ export type FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput = {
   updatedAt?: Date | string
 }
 
-export type FlagEnvironmentCreateOrConnectWithoutFeatureFlagInput = {
+export type FlagEnvironmentCreateOrConnectWithoutFlagInput = {
   where: Prisma.FlagEnvironmentWhereUniqueInput
-  create: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput>
+  create: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput>
 }
 
-export type FlagEnvironmentCreateManyFeatureFlagInputEnvelope = {
-  data: Prisma.FlagEnvironmentCreateManyFeatureFlagInput | Prisma.FlagEnvironmentCreateManyFeatureFlagInput[]
+export type FlagEnvironmentCreateManyFlagInputEnvelope = {
+  data: Prisma.FlagEnvironmentCreateManyFlagInput | Prisma.FlagEnvironmentCreateManyFlagInput[]
   skipDuplicates?: boolean
 }
 
-export type FlagEnvironmentUpsertWithWhereUniqueWithoutFeatureFlagInput = {
+export type FlagEnvironmentUpsertWithWhereUniqueWithoutFlagInput = {
   where: Prisma.FlagEnvironmentWhereUniqueInput
-  update: Prisma.XOR<Prisma.FlagEnvironmentUpdateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedUpdateWithoutFeatureFlagInput>
-  create: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFeatureFlagInput>
+  update: Prisma.XOR<Prisma.FlagEnvironmentUpdateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedUpdateWithoutFlagInput>
+  create: Prisma.XOR<Prisma.FlagEnvironmentCreateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedCreateWithoutFlagInput>
 }
 
-export type FlagEnvironmentUpdateWithWhereUniqueWithoutFeatureFlagInput = {
+export type FlagEnvironmentUpdateWithWhereUniqueWithoutFlagInput = {
   where: Prisma.FlagEnvironmentWhereUniqueInput
-  data: Prisma.XOR<Prisma.FlagEnvironmentUpdateWithoutFeatureFlagInput, Prisma.FlagEnvironmentUncheckedUpdateWithoutFeatureFlagInput>
+  data: Prisma.XOR<Prisma.FlagEnvironmentUpdateWithoutFlagInput, Prisma.FlagEnvironmentUncheckedUpdateWithoutFlagInput>
 }
 
-export type FlagEnvironmentUpdateManyWithWhereWithoutFeatureFlagInput = {
+export type FlagEnvironmentUpdateManyWithWhereWithoutFlagInput = {
   where: Prisma.FlagEnvironmentScalarWhereInput
-  data: Prisma.XOR<Prisma.FlagEnvironmentUpdateManyMutationInput, Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagInput>
+  data: Prisma.XOR<Prisma.FlagEnvironmentUpdateManyMutationInput, Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFlagInput>
 }
 
 export type FlagEnvironmentScalarWhereInput = {
@@ -433,7 +433,7 @@ export type FlagEnvironmentScalarWhereInput = {
   flagId?: Prisma.StringFilter<"FlagEnvironment"> | string
 }
 
-export type FlagEnvironmentCreateManyFeatureFlagInput = {
+export type FlagEnvironmentCreateManyFlagInput = {
   id?: string
   environment: $Enums.FlagEnvironmentType
   overrides: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -441,7 +441,7 @@ export type FlagEnvironmentCreateManyFeatureFlagInput = {
   updatedAt?: Date | string
 }
 
-export type FlagEnvironmentUpdateWithoutFeatureFlagInput = {
+export type FlagEnvironmentUpdateWithoutFlagInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   environment?: Prisma.EnumFlagEnvironmentTypeFieldUpdateOperationsInput | $Enums.FlagEnvironmentType
   overrides?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -449,7 +449,7 @@ export type FlagEnvironmentUpdateWithoutFeatureFlagInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FlagEnvironmentUncheckedUpdateWithoutFeatureFlagInput = {
+export type FlagEnvironmentUncheckedUpdateWithoutFlagInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   environment?: Prisma.EnumFlagEnvironmentTypeFieldUpdateOperationsInput | $Enums.FlagEnvironmentType
   overrides?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -457,7 +457,7 @@ export type FlagEnvironmentUncheckedUpdateWithoutFeatureFlagInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FlagEnvironmentUncheckedUpdateManyWithoutFeatureFlagInput = {
+export type FlagEnvironmentUncheckedUpdateManyWithoutFlagInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   environment?: Prisma.EnumFlagEnvironmentTypeFieldUpdateOperationsInput | $Enums.FlagEnvironmentType
   overrides?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -474,7 +474,7 @@ export type FlagEnvironmentSelect<ExtArgs extends runtime.Types.Extensions.Inter
   createdAt?: boolean
   updatedAt?: boolean
   flagId?: boolean
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flagEnvironment"]>
 
 export type FlagEnvironmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -484,7 +484,7 @@ export type FlagEnvironmentSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   updatedAt?: boolean
   flagId?: boolean
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flagEnvironment"]>
 
 export type FlagEnvironmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -494,7 +494,7 @@ export type FlagEnvironmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   updatedAt?: boolean
   flagId?: boolean
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["flagEnvironment"]>
 
 export type FlagEnvironmentSelectScalar = {
@@ -508,19 +508,19 @@ export type FlagEnvironmentSelectScalar = {
 
 export type FlagEnvironmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "environment" | "overrides" | "createdAt" | "updatedAt" | "flagId", ExtArgs["result"]["flagEnvironment"]>
 export type FlagEnvironmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }
 export type FlagEnvironmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }
 export type FlagEnvironmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  featureFlag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
+  flag?: boolean | Prisma.FlagDefaultArgs<ExtArgs>
 }
 
 export type $FlagEnvironmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FlagEnvironment"
   objects: {
-    featureFlag: Prisma.$FlagPayload<ExtArgs>
+    flag: Prisma.$FlagPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -923,7 +923,7 @@ readonly fields: FlagEnvironmentFieldRefs;
  */
 export interface Prisma__FlagEnvironmentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  featureFlag<T extends Prisma.FlagDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlagDefaultArgs<ExtArgs>>): Prisma.Prisma__FlagClient<runtime.Types.Result.GetResult<Prisma.$FlagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  flag<T extends Prisma.FlagDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FlagDefaultArgs<ExtArgs>>): Prisma.Prisma__FlagClient<runtime.Types.Result.GetResult<Prisma.$FlagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

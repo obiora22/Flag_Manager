@@ -11,7 +11,6 @@ import {
   Shield,
   Code,
   ChevronRight,
-  Activity,
 } from "lucide-react";
 import { OrgSwitcher } from "./orgSwitcher";
 import { DashboardData } from "@api/src/routes/dashboard.routes";
@@ -22,7 +21,7 @@ interface Props {
   dashboardData: DashboardData;
   session: Session;
 }
-export function Dashboard({ dashboardData, session }: Props) {
+export function Dashboard({ dashboardData, session  }: Props) {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   const { totalFlags, totalMembership, totalProjects } = dashboardData;
@@ -33,7 +32,6 @@ export function Dashboard({ dashboardData, session }: Props) {
     { label: "Active Flags", value: totalFlags, change: "+12%", icon: Flag },
     { label: "Projects", value: totalProjects, change: "+2", icon: Globe },
     { label: "Team Members", value: totalMembership, change: "+3", icon: Users },
-    // { label: "Evaluations/day", value: "2.4M", change: "+18%", icon: Activity },
   ];
 
   const quickActions = [
