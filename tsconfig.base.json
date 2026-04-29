@@ -13,8 +13,8 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
-    "baseUrl": ".",
     "paths": {
+      "*": ["."],
       "@admin/*": ["./apps/admin/*"],
       "@api/*": ["./apps/api/*"],
       "@db/*": ["./packages/db/*"],
