@@ -82,6 +82,7 @@ model Flag {
   returnValueType ReturnValueType
   defaultValue    Json
   archived        Boolean           @default(false)
+  enabled         Boolean           @default(true)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   project         Project           @relation(fields: [projectId], references: [id])

@@ -29,7 +29,7 @@ interface EmptyStateProps {
   fullPage?: boolean;
 }
 
-export default function EmptyState({
+export function EmptyState({
   icon: Icon = Inbox,
   title = 'No data available',
   message = 'We couldn’t find any data for your request.',

@@ -13,6 +13,7 @@ export const ConditionSchema = z.object({
     "lte",
     "startsWith",
     "endsWith",
+    "in",
   ]),
   value: z.unknown(),
 });
@@ -27,9 +28,11 @@ export const baseRuleSchema = z.object({
   key: z.string(),
   conditions: z.array(ConditionSchema).optional(),
   rollout: RolloutSchema.optional(),
-  serve: z.union([z.json(), z.null(), z.boolean()]),
+  // serve: z.union([z.json(), z.null(), z.boolean()]),
+  serve: z.unknown(),
 });
 
-export const RulesSchema = z.array(baseRuleSchema).default([]);
+export const rulesSchema = z.array(baseRuleSchema);
 
 export type Rule = z.infer<typeof baseRuleSchema>;
+export type Rules = z.infer<typeof rulesSchema>;

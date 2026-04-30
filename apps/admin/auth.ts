@@ -86,7 +86,6 @@ const nextAuth = NextAuth({
   ],
   callbacks: {
     async signIn(ctx) {
-      console.log({ ctx });
       return !!ctx?.user;
     },
     jwt(ctx) {

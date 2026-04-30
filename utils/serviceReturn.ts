@@ -1,24 +1,20 @@
 import { narrowError } from "./narrowError.ts";
 
+export type APIResult<T> = ReturnType<typeof handleResult<T>> | ReturnType<typeof handleError>;
 export const handleResult = <T>(result: T | null) => {
-  console.log({ result }, "HANDLER");
   return result === null
-    ? {
-        ok: true,
-        data: null,
-        error: null,
-      }
-    : {
-        ok: true,
+    ? ({
+        status: "not-found",
+      } as const)
+    : ({
+        status: "success",
         data: result,
-        error: null,
-      };
+      } as const);
 };
 
 export const handleError = (error: unknown) => {
   return {
-    ok: false,
-    data: null,
-    error: narrowError(error),
-  };
+    status: "error",
+    error: narrowError(error).message,
+  } as const;
 };

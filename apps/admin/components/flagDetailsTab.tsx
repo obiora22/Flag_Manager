@@ -1,90 +1,143 @@
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import {
   Plus,
   Edit,
   Trash2,
-  ToggleRight,
   ChevronDown,
   ChevronRight,
   GitBranch,
   Zap,
   Users,
-  Globe,
   CheckCircle2,
   XCircle,
   TrendingUp,
   BarChart3,
-  Calendar,
-  Shield,
   Archive,
   Copy,
   Loader2,
   AlertTriangle,
   Activity,
 } from "lucide-react";
-import { Flag as FType, FlagEnvironment } from "@db/prisma/generated/client.ts";
+import { FlagEnvironment } from "@db/prisma/generated/client.ts";
 import { Rule } from "@db/types/rules.ts";
-
-type FlagWithRules = Omit<FType, "rules"> & {
-  environments: FlagEnvironment[];
-  rules: Rule[];
-};
+import Modal from "@admin/components/Modal.tsx";
+import RuleBuilderForm from "@admin/components/RuleFormBuilder.tsx";
+import { clientSideFetch } from "@admin/lib/clientFetch";
+import { useTransitionWrapper } from "@admin/lib/useTransitionWrapper.tsx";
+import { BasicFlag, CompositeFlag } from "@api/src/services/flagService";
+import { APIResult } from "@repo/utils/serviceReturn";
+import { rulesSchema } from "@schema/rule.schema";
 
 interface RulesTabProps {
-  flag: FlagWithRules;
+  flag: CompositeFlag;
+  setFlag: React.Dispatch<SetStateAction<CompositeFlag>>;
   projectId: string;
   expandedRules: Set<string>;
   onToggleRule: (ruleId: string) => void;
 }
 
-function isEnabled(flag: FlagWithRules) {
+function isEnabled(flag: CompositeFlag) {
   return flag.rules.length > 0 && flag.defaultValue === false;
 }
 
-export function RulesTab({ flag, expandedRules, onToggleRule }: RulesTabProps) {
-  if (flag.rules.length === 0) {
-    return (
-      <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-12 text-center">
-        <GitBranch className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-white mb-2">No rules configured</h3>
-        <p className="text-slate-400 mb-6">
-          All evaluations will return the default value. Add rules to target specific users or
-          contexts.
-        </p>
-        <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-          <Plus className="w-5 h-5" />
-          Create Rule
-        </button>
-      </div>
-    );
-  }
+export function RulesTab({ flag, setFlag, expandedRules, onToggleRule }: RulesTabProps) {
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedRule, setSelectedRule] = useState<Rule | undefined>(undefined);
+
+  const { start, isPending } = useTransitionWrapper();
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const { rules } = flag;
+  const handleRuleDelete = (targetIndex: number) =>
+    start(async () => {
+      setSubmissionError(null);
+      const result = await clientSideFetch<APIResult<BasicFlag>>(`/flags/${flag.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          rules: rules.filter((r, index) => index !== targetIndex),
+        }),
+      });
+
+      if (result.status !== "success") {
+        setSubmissionError(result.error);
+      } else if (result.payload.status === "error") {
+        setSubmissionError(result.payload.error);
+      } else {
+        const updatedFlag = result.payload.data;
+        const { error, data } = rulesSchema.safeParse(updatedFlag.rules);
+        if (error) {
+          setSubmissionError(error.message);
+          return;
+        }
+        setFlag((prev) => ({
+          ...prev,
+          rules: data,
+          environments: prev.environments,
+        }));
+      }
+    });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Targeting Rules</h2>
-          <p className="text-slate-400">Rules are evaluated in order. First match wins.</p>
+    <>
+      <Modal isOpen={openForm} onClose={() => setOpenForm(false)}>
+        <RuleBuilderForm
+          flag={flag}
+          flagType={flag.returnValueType}
+          setFlag={setFlag}
+          existingRule={selectedRule}
+        />
+      </Modal>
+      {rules.length === 0 ? (
+        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-12 text-center">
+          <GitBranch className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-white mb-2">No rules configured</h3>
+          <p className="text-slate-400 mb-6">
+            All evaluations will return the default value. Add rules to target specific users or
+            contexts.
+          </p>
+          <button
+            onClick={() => setOpenForm(true)}
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            Create Rule
+          </button>
         </div>
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-          <Plus className="w-4 h-4" />
-          Add Rule
-        </button>
-      </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-1">Targeting Rules</h2>
+              <p className="text-slate-400">Rules are evaluated in order. First match wins.</p>
+            </div>
+            <button
+              onClick={() => setOpenForm(true)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Rule
+            </button>
+          </div>
 
-      <div className="space-y-3">
-        {flag.rules.map((rule, index) => (
-          <RuleCard
-            key={rule.key}
-            rule={rule}
-            index={index}
-            flagType={flag.returnValueType}
-            isExpanded={expandedRules.has(rule.key)}
-            onToggle={() => onToggleRule(rule.key)}
-          />
-        ))}
-      </div>
-    </div>
+          <div className="space-y-3">
+            {rules.map((rule, index) => (
+              <RuleCard
+                key={index}
+                rule={rule}
+                index={index}
+                flagType={flag.returnValueType}
+                isExpanded={expandedRules.has(rule.key)}
+                onToggle={() => onToggleRule(rule.key)}
+                setSelectedRule={setSelectedRule}
+                handleRuleDelete={handleRuleDelete}
+                submissionError={submissionError}
+                isPending={isPending}
+                openForm={() => setOpenForm(true)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -94,9 +147,22 @@ interface RuleCardProps {
   flagType: string;
   isExpanded: boolean;
   onToggle: () => void;
+  setSelectedRule: (rule: Rule) => void;
+  openForm: () => void;
+  handleRuleDelete: (index: number) => void;
+  isPending: boolean;
+  submissionError: string | null;
 }
 
-function RuleCard({ rule, index }: RuleCardProps) {
+function RuleCard({
+  rule,
+  index,
+  setSelectedRule,
+  openForm,
+  handleRuleDelete,
+  isPending,
+  submissionError,
+}: RuleCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const formatValue = (value: unknown): string => {
@@ -143,7 +209,8 @@ function RuleCard({ rule, index }: RuleCardProps) {
                 {rule.conditions && rule.conditions.length > 0 && (
                   <span className="flex items-center gap-1">
                     <Zap className="w-3.5 h-3.5" />
-                    {rule.conditions.length} condition{rule.conditions.length !== 1 ? "s" : ""}
+                    {rule.conditions.length} condition
+                    {rule.conditions.length !== 1 ? "s" : ""}
                   </span>
                 )}
                 {rule.rollout && (
@@ -228,27 +295,25 @@ function RuleCard({ rule, index }: RuleCardProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2 pt-3 border-t border-slate-700/50">
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition-colors">
+            <button
+              onClick={() => {
+                setSelectedRule(rule);
+                openForm();
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+            >
               <Edit className="w-4 h-4" />
               Edit
             </button>
-            {/*<button className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition-colors">*/}
-            {/*  {rule.enabled ? (*/}
-            {/*    <>*/}
-            {/*      <ToggleLeft className="w-4 h-4" />*/}
-            {/*      Disable*/}
-            {/*    </>*/}
-            {/*  ) : (*/}
-            {/*    <>*/}
-            {/*      <ToggleRight className="w-4 h-4" />*/}
-            {/*      Enable*/}
-            {/*    </>*/}
-            {/*  )}*/}
-            {/*</button>*/}
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors ml-auto">
+            <button
+              onClick={() => handleRuleDelete(index)}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors ml-auto"
+            >
               <Trash2 className="w-4 h-4" />
+              {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
               Delete
             </button>
+            <p>{submissionError}</p>
           </div>
         </div>
       )}
@@ -261,12 +326,12 @@ function RuleCard({ rule, index }: RuleCardProps) {
 // ============================================
 
 interface EnvironmentsTabProps {
-  flag: FlagWithRules;
+  flag: CompositeFlag;
   projectId: string;
   environments: FlagEnvironment[];
 }
 
-export function EnvironmentsTab({ flag, projectId, environments }: EnvironmentsTabProps) {
+export function EnvironmentsTab({ flag, environments }: EnvironmentsTabProps) {
   return (
     <div className="space-y-4">
       <div className="mb-6">
@@ -274,7 +339,7 @@ export function EnvironmentsTab({ flag, projectId, environments }: EnvironmentsT
         <p className="text-slate-400">Override flag behavior for specific environments</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
         {environments.map((env) => (
           <EnvironmentCard key={env.id} environment={env} flag={flag} />
         ))}
@@ -285,13 +350,12 @@ export function EnvironmentsTab({ flag, projectId, environments }: EnvironmentsT
 
 interface EnvironmentCardProps {
   environment: FlagEnvironment;
-  flag: FlagWithRules;
+  flag: CompositeFlag;
 }
 
-function EnvironmentCard({ environment, flag }: EnvironmentCardProps) {
-  // eslint-disable-next-line react-hooks/purity
-  const isEnabled = Math.random() > 0.3; // Mock data
-  const hasOverride = Math.random() > 0.7;
+function EnvironmentCard({ environment }: EnvironmentCardProps) {
+  const isEnabled = true;
+  const hasOverride = false;
 
   return (
     <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
@@ -327,8 +391,8 @@ function EnvironmentCard({ environment, flag }: EnvironmentCardProps) {
         <div className="flex items-center justify-between">
           <span className="text-slate-500">Evaluations (24h)</span>
           <span className="text-white font-mono">
-            {/* eslint-disable-next-line react-hooks/purity */}
-            {(Math.random() * 10000).toFixed(0)}
+            {}
+            {(0.2 * 10000).toFixed(0)}
           </span>
         </div>
       </div>
@@ -348,11 +412,11 @@ function EnvironmentCard({ environment, flag }: EnvironmentCardProps) {
 // ============================================
 
 interface AnalyticsTabProps {
-  flag: FlagWithRules;
+  flag: CompositeFlag;
   projectId: string;
 }
 
-export function AnalyticsTab({ flag, projectId }: AnalyticsTabProps) {
+export function AnalyticsTab({}: AnalyticsTabProps) {
   // Mock data for charts
   const dailyData = Array.from({ length: 7 }, (_, i) => ({
     // eslint-disable-next-line react-hooks/purity
@@ -360,6 +424,7 @@ export function AnalyticsTab({ flag, projectId }: AnalyticsTabProps) {
       month: "short",
       day: "numeric",
     }),
+
     // eslint-disable-next-line react-hooks/purity
     evaluations: Math.floor(Math.random() * 50000) + 10000,
   }));
@@ -481,26 +546,27 @@ function MetricCard({ label, value, change, trend, icon: Icon }: MetricCardProps
 // ============================================
 
 interface SettingsTabProps {
-  flag: FlagWithRules;
+  flag: CompositeFlag;
   projectId: string;
   onEdit: () => void;
   onDuplicate: () => void;
-  onArchive: () => void;
-  onDelete: () => void;
+  onArchive: (flag: CompositeFlag) => void;
+  onDelete: (flagId: string) => void;
   actionInProgress: string | null;
+  isPending: boolean;
 }
 
 export function SettingsTab({
   flag,
-  projectId,
   onEdit,
   onDuplicate,
   onArchive,
   onDelete,
   actionInProgress,
+  isPending,
 }: SettingsTabProps) {
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="space-y-6">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white mb-1">Settings</h2>
         <p className="text-slate-400">Manage flag configuration and danger zone actions</p>
@@ -554,26 +620,30 @@ export function SettingsTab({
 
         <div className="space-y-4">
           <button
-            onClick={onArchive}
+            onClick={() => onArchive(flag)}
             disabled={actionInProgress === "archive"}
             className="w-full flex items-center justify-between p-4 bg-slate-900/50 hover:bg-slate-900 rounded-lg border border-slate-700 transition-colors disabled:opacity-50"
           >
             <div className="flex items-center gap-3">
-              {actionInProgress === "archive" ? (
+              {actionInProgress === "archive" && isPending ? (
                 <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
               ) : (
                 <Archive className="w-5 h-5 text-amber-400" />
               )}
               <div className="text-left">
-                <p className="text-white font-medium">Archive Flag</p>
-                <p className="text-sm text-slate-400">Stop evaluations but keep for reference</p>
+                <p className="text-white font-medium">{flag.archived ? "Unarchive" : "Archive"}</p>
+                <p className="text-sm text-slate-400">
+                  {flag.archived
+                    ? "Allow evaluations to continue"
+                    : "Stop evaluations, but keep for reference"}
+                </p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-slate-400" />
           </button>
 
           <button
-            onClick={onDelete}
+            onClick={() => onDelete(flag.id)}
             disabled={isEnabled(flag) || actionInProgress === "delete"}
             className="w-full flex items-center justify-between p-4 bg-slate-900/50 hover:bg-slate-900 rounded-lg border border-red-500/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -598,11 +668,4 @@ export function SettingsTab({
       </div>
     </div>
   );
-}
-
-// Helper function to format value
-function formatValue(value: any): string {
-  if (typeof value === "boolean") return value ? "true" : "false";
-  if (typeof value === "object") return JSON.stringify(value, null, 2);
-  return String(value);
 }

@@ -1,39 +1,43 @@
-import { Suspense } from 'react';
-import { FlagDetails } from  '@admin/component/FlagDetails.tsx'
-
-import {generateMockFlagDetail} from "@admin/app/projects/[projectId]/flags/[flagId]/mock.ts";
+import { Suspense } from "react";
+import { FlagDetails } from "@admin/components/FlagDetails.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
+import { apiFetchClient } from "@admin/lib/serverFetch.ts";
+import { ErrorState } from "@admin/components/ErrorState";
+import { BasicFlag } from "@api/src/services/flagService";
+import { APIResult } from "@repo/utils/serviceReturn";
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     flagId: string;
-  };
+  }>;
+  searchParams: Promise<{
+    projectName: string;
+  }>;
 }
 
-export default async function FlagPage({ params }: Props) {
+export default async function FlagPage({ params, searchParams }: Props) {
   await checkUserSession();
 
-  const projectName = 'Project I';
-  const flag = generateMockFlagDetail(params.projectId)
+  const { projectId, flagId } = await params;
+  const { projectName } = await searchParams;
 
-    return (
-      <Suspense fallback={<FlagDetailSkeleton />}>
-        <FlagDetails
-          flag={flag}
-          projectId={params.projectId}
-          projectName={projectName}
-          environments={flag.environments}
-        />
-      </Suspense>
-    );
+  const result = await apiFetchClient<APIResult<BasicFlag>>(`/flags/${flagId}`);
 
+  if (result.status !== "success" || result.payload.status !== "success") {
+    return <ErrorState message="something went wrong. Try again." />;
+  }
+
+  return (
+    <Suspense fallback={<FlagDetailSkeleton />}>
+      <FlagDetails flag={result.payload.data} projectId={projectId} projectName={projectName} />
+    </Suspense>
+  );
 }
 
-// Loading skeleton
 function FlagDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="border-b border-slate-800/50 backdrop-blur-sm bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-start justify-between mb-4">
@@ -77,6 +81,3 @@ function FlagDetailSkeleton() {
     </div>
   );
 }
-
-
-

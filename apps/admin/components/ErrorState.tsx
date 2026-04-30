@@ -18,7 +18,7 @@ interface ErrorStateProps {
   };
   fullPage?: boolean;
 }
-export default function ErrorState({
+export  function ErrorState({
   title = 'Server error',
   message = 'Data could not be fetched',
   errorCode,

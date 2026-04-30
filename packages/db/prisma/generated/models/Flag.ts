@@ -30,6 +30,7 @@ export type FlagMinAggregateOutputType = {
   description: string | null
   returnValueType: $Enums.ReturnValueType | null
   archived: boolean | null
+  enabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   projectId: string | null
@@ -41,6 +42,7 @@ export type FlagMaxAggregateOutputType = {
   description: string | null
   returnValueType: $Enums.ReturnValueType | null
   archived: boolean | null
+  enabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   projectId: string | null
@@ -54,6 +56,7 @@ export type FlagCountAggregateOutputType = {
   returnValueType: number
   defaultValue: number
   archived: number
+  enabled: number
   createdAt: number
   updatedAt: number
   projectId: number
@@ -67,6 +70,7 @@ export type FlagMinAggregateInputType = {
   description?: true
   returnValueType?: true
   archived?: true
+  enabled?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -78,6 +82,7 @@ export type FlagMaxAggregateInputType = {
   description?: true
   returnValueType?: true
   archived?: true
+  enabled?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -91,6 +96,7 @@ export type FlagCountAggregateInputType = {
   returnValueType?: true
   defaultValue?: true
   archived?: true
+  enabled?: true
   createdAt?: true
   updatedAt?: true
   projectId?: true
@@ -177,6 +183,7 @@ export type FlagGroupByOutputType = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: runtime.JsonValue
   archived: boolean
+  enabled: boolean
   createdAt: Date
   updatedAt: Date
   projectId: string
@@ -211,6 +218,7 @@ export type FlagWhereInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFilter<"Flag"> | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonFilter<"Flag">
   archived?: Prisma.BoolFilter<"Flag"> | boolean
+  enabled?: Prisma.BoolFilter<"Flag"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   projectId?: Prisma.StringFilter<"Flag"> | string
@@ -227,6 +235,7 @@ export type FlagOrderByWithRelationInput = {
   returnValueType?: Prisma.SortOrder
   defaultValue?: Prisma.SortOrder
   archived?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -247,6 +256,7 @@ export type FlagWhereUniqueInput = Prisma.AtLeast<{
   returnValueType?: Prisma.EnumReturnValueTypeFilter<"Flag"> | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonFilter<"Flag">
   archived?: Prisma.BoolFilter<"Flag"> | boolean
+  enabled?: Prisma.BoolFilter<"Flag"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   projectId?: Prisma.StringFilter<"Flag"> | string
@@ -263,6 +273,7 @@ export type FlagOrderByWithAggregationInput = {
   returnValueType?: Prisma.SortOrder
   defaultValue?: Prisma.SortOrder
   archived?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -282,6 +293,7 @@ export type FlagScalarWhereWithAggregatesInput = {
   returnValueType?: Prisma.EnumReturnValueTypeWithAggregatesFilter<"Flag"> | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonWithAggregatesFilter<"Flag">
   archived?: Prisma.BoolWithAggregatesFilter<"Flag"> | boolean
+  enabled?: Prisma.BoolWithAggregatesFilter<"Flag"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Flag"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Flag"> | Date | string
   projectId?: Prisma.StringWithAggregatesFilter<"Flag"> | string
@@ -295,6 +307,7 @@ export type FlagCreateInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFlagsInput
@@ -310,6 +323,7 @@ export type FlagUncheckedCreateInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
@@ -325,6 +339,7 @@ export type FlagUpdateInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFlagsNestedInput
@@ -340,6 +355,7 @@ export type FlagUncheckedUpdateInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -355,6 +371,7 @@ export type FlagCreateManyInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
@@ -368,6 +385,7 @@ export type FlagUpdateManyMutationInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -380,6 +398,7 @@ export type FlagUncheckedUpdateManyInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -413,6 +432,7 @@ export type FlagCountOrderByAggregateInput = {
   returnValueType?: Prisma.SortOrder
   defaultValue?: Prisma.SortOrder
   archived?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -424,6 +444,7 @@ export type FlagMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   returnValueType?: Prisma.SortOrder
   archived?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -435,6 +456,7 @@ export type FlagMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   returnValueType?: Prisma.SortOrder
   archived?: Prisma.SortOrder
+  enabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -533,6 +555,7 @@ export type FlagCreateWithoutAuditsInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFlagsInput
@@ -547,6 +570,7 @@ export type FlagUncheckedCreateWithoutAuditsInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
@@ -577,6 +601,7 @@ export type FlagUpdateWithoutAuditsInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFlagsNestedInput
@@ -591,6 +616,7 @@ export type FlagUncheckedUpdateWithoutAuditsInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -605,6 +631,7 @@ export type FlagCreateWithoutProjectInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   environments?: Prisma.FlagEnvironmentCreateNestedManyWithoutFlagInput
@@ -619,6 +646,7 @@ export type FlagUncheckedCreateWithoutProjectInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   environments?: Prisma.FlagEnvironmentUncheckedCreateNestedManyWithoutFlagInput
@@ -662,6 +690,7 @@ export type FlagScalarWhereInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFilter<"Flag"> | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonFilter<"Flag">
   archived?: Prisma.BoolFilter<"Flag"> | boolean
+  enabled?: Prisma.BoolFilter<"Flag"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Flag"> | Date | string
   projectId?: Prisma.StringFilter<"Flag"> | string
@@ -675,6 +704,7 @@ export type FlagCreateWithoutEnvironmentsInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFlagsInput
@@ -689,6 +719,7 @@ export type FlagUncheckedCreateWithoutEnvironmentsInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   projectId: string
@@ -719,6 +750,7 @@ export type FlagUpdateWithoutEnvironmentsInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFlagsNestedInput
@@ -733,6 +765,7 @@ export type FlagUncheckedUpdateWithoutEnvironmentsInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -747,6 +780,7 @@ export type FlagCreateManyProjectInput = {
   returnValueType: $Enums.ReturnValueType
   defaultValue: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: boolean
+  enabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -759,6 +793,7 @@ export type FlagUpdateWithoutProjectInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   environments?: Prisma.FlagEnvironmentUpdateManyWithoutFlagNestedInput
@@ -773,6 +808,7 @@ export type FlagUncheckedUpdateWithoutProjectInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   environments?: Prisma.FlagEnvironmentUncheckedUpdateManyWithoutFlagNestedInput
@@ -787,6 +823,7 @@ export type FlagUncheckedUpdateManyWithoutProjectInput = {
   returnValueType?: Prisma.EnumReturnValueTypeFieldUpdateOperationsInput | $Enums.ReturnValueType
   defaultValue?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -839,6 +876,7 @@ export type FlagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   returnValueType?: boolean
   defaultValue?: boolean
   archived?: boolean
+  enabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -856,6 +894,7 @@ export type FlagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   returnValueType?: boolean
   defaultValue?: boolean
   archived?: boolean
+  enabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -870,6 +909,7 @@ export type FlagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   returnValueType?: boolean
   defaultValue?: boolean
   archived?: boolean
+  enabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
@@ -884,12 +924,13 @@ export type FlagSelectScalar = {
   returnValueType?: boolean
   defaultValue?: boolean
   archived?: boolean
+  enabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projectId?: boolean
 }
 
-export type FlagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "description" | "rules" | "returnValueType" | "defaultValue" | "archived" | "createdAt" | "updatedAt" | "projectId", ExtArgs["result"]["flag"]>
+export type FlagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "description" | "rules" | "returnValueType" | "defaultValue" | "archived" | "enabled" | "createdAt" | "updatedAt" | "projectId", ExtArgs["result"]["flag"]>
 export type FlagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   environments?: boolean | Prisma.Flag$environmentsArgs<ExtArgs>
@@ -918,6 +959,7 @@ export type $FlagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     returnValueType: $Enums.ReturnValueType
     defaultValue: runtime.JsonValue
     archived: boolean
+    enabled: boolean
     createdAt: Date
     updatedAt: Date
     projectId: string
@@ -1354,6 +1396,7 @@ export interface FlagFieldRefs {
   readonly returnValueType: Prisma.FieldRef<"Flag", 'ReturnValueType'>
   readonly defaultValue: Prisma.FieldRef<"Flag", 'Json'>
   readonly archived: Prisma.FieldRef<"Flag", 'Boolean'>
+  readonly enabled: Prisma.FieldRef<"Flag", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Flag", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Flag", 'DateTime'>
   readonly projectId: Prisma.FieldRef<"Flag", 'String'>

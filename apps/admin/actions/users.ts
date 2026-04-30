@@ -1,15 +1,17 @@
 "use server";
 
-import { apiFetchClient, ApiFetchResult } from "@admin/lib/fetchClient";
+import { apiFetchClient, ApiFetchResult } from "@admin/lib/serverFetch";
 import { narrowError } from "@repo/utils/narrowError";
 import { BaseUser } from "@schema/user.schema";
 import { UserIncludeCredentials } from "@api/src/services/userServices";
 
 export async function getUserCredentials(
-  email: string,
+  email: string
 ): Promise<ApiFetchResult<UserIncludeCredentials>> {
   try {
-    const response = await fetch(`${process.env.DEVELOPMENT_API_URL}/users/email?email=${email}`);
+    const response = await fetch(
+      `${process.env.DEVELOPMENT_API_URL}/users/email?email=${email}`
+    );
     return await response.json();
   } catch (err) {
     return {

@@ -1,0 +1,69 @@
+                        ┌─────────────────────────────┐
+                        │        Organization          │
+                        ├─────────────────────────────┤
+                        │  text        name            │
+                        │  timestamp   createdAt       │
+                        │  text        id (PK)         │
+                        └──────────────┬──────────────┘
+                                       │ ▲
+                          orgId:id     │ │ organizationId:id
+               ┌───────────────────────┘ └─────────────────────┐
+               │                                               │
+    ┌──────────┴──────────────┐                ┌──────────────┴──────────────┐
+    │       Membership        │                │           Project            │
+    ├─────────────────────────┤                ├─────────────────────────────┤
+    │  text    userId         │                │  text        name            │
+    │  text    orgId          │                │  text        slug            │
+    │  role    role           │                │  text        organizationId  │
+    │  text    id (PK)        │                │  timestamp   createdAt       │
+    └──────────┬──────────────┘                │  text        id (PK)         │
+               │ userId:id                     └──────┬───────────────────────┘
+               │                                     │ A:id
+               ▼                              ┌──────┴──────────────────┐
+    ┌──────────────────────────┐              │     _ProjectToUser       │
+    │           User           │              ├─────────────────────────┤
+    ├──────────────────────────┤              │  text    A               │
+    │  text      email         │              │  text    B               │
+    │  timestamp createdAt     │◄─────────────┘ B:id                    
+    │  text      firstname     │              
+    │  text      lastname      │              
+    │  timestamp updatedAt     │◄─────────────────────────────────────────┐
+    │  text      id (PK)       │                                           │
+    └──────────────────────────┘                                           │ userId:id
+               ▲                                                           │
+               │ userId:id                              ┌──────────────────┴──────────┐
+               │                                        │         Credential           │
+               └──────────────────────────────          ├─────────────────────────────┤
+                                                        │  text      passwordHash      │
+                                                        │  timestamp createdAt         │
+                                                        │  text      userId            │
+                                                        └─────────────────────────────┘
+
+    ┌──────────────────────────────┐
+    │            Flag              │
+    ├──────────────────────────────┤
+    │  text            key         │
+    │  text            description │
+    │  jsonb           rules       │
+    │  returnvaluetype returnValueType│
+    │  jsonb           defaultValue│
+    │  boolean         archived    │
+    │  timestamp       createdAt   │
+    │  timestamp       updatedAt   │
+    │  text            projectId   ├──────────────────────► Project (projectId:id)
+    │  text            id (PK)     │
+    └───────────┬──────────────────┘
+                │ ▲
+      flagId:id │ │ flagId:id
+                │ │
+    ┌───────────┴──────────────────┐      ┌────────────────────────────────┐
+    │       FlagEnvironment        │      │           AuditLog             │
+    ├──────────────────────────────┤      ├────────────────────────────────┤
+    │  flagenvironmenttype         │      │  text      projectId           │
+    │             environment      │      │  text      flagId              ├──► Flag
+    │  jsonb      overrides        │      │  text      actor               │    (flagId:id)
+    │  timestamp  createdAt        │      │  text      action              │
+    │  timestamp  updatedAt        │      │  jsonb     payload             │
+    │  text       flagId           │      │  timestamp createdAt           │
+    │  text       id (PK)          │      │  text      id (PK)             │
+    └──────────────────────────────┘      └────────────────────────────────┘

@@ -1,34 +1,23 @@
-import EmptyState from "@admin/component/emptyState";
-import ErrorState from "@admin/component/errorState";
-import { Project } from "@admin/component/Project";
+import { EmptyState } from "@admin/components/EmptyState";
+import { ErrorState } from "@admin/components/ErrorState";
+import { ProjectList } from "@admin/components/Project/ProjectList.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
-import { apiFetchClient } from "@admin/lib/fetchClient";
+import { apiFetchClient } from "@admin/lib/serverFetch";
 import { ProjectData } from "@api/src/services/projectServices";
+import { APIResult } from "@repo/utils/serviceReturn";
 
 export default async function ProjectPage() {
   const session = await checkUserSession();
 
-  console.log({ session })
+  const result = await apiFetchClient<APIResult<ProjectData[]>>(`/projects`);
 
+  if (
+    result.status === "api-error" ||
+    result.status === "network-error" ||
+    result.payload.status !== "success"
+  ) {
+    return <ErrorState message="something went wrong. Try again." />;
+  }
 
-
-  const { data, error } = await apiFetchClient<ProjectData[]>(`/projects`);
-
-  if (error)
-    return (
-      <ErrorState
-        title={"Server error"}
-        message={"Could not fetch project"}
-        variant="info"
-        errorCode="500"
-        action={{
-          label: "Reload",
-          href: "/projects",
-        }}
-      />
-    );
-
-  if (!data) return <EmptyState title={"No data available"} message={"Try again"} />;
-
-  return <Project projectData={data} />;
+  return <ProjectList projectData={result.payload.data} organizationId={session.activeOrgId} />;
 }

@@ -130,6 +130,7 @@ export const FlagScalarFieldEnum = {
   returnValueType: 'returnValueType',
   defaultValue: 'defaultValue',
   archived: 'archived',
+  enabled: 'enabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   projectId: 'projectId'

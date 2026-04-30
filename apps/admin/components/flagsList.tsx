@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from "react";
-import {Flag as F, FlagEnvironment} from "@db/prisma/generated/client";
+import { Flag as F, FlagEnvironment } from "@db/prisma/generated/client";
 import {
   Flag,
   Plus,
@@ -34,7 +34,9 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import useSWR from "swr";
+import { ApiFetchResult, clientSideFetch } from "@admin/lib/clientFetch.ts";
+import { FlagType } from "@admin/app/projects/[projectId]/flags/[flagId]/types";
 type Operator =
   | "equals"
   | "notEquals"
@@ -64,17 +66,17 @@ export interface Rule {
   key: string;
   conditions?: Condition[];
   rollout?: Rollout;
-  defaultValue?: FlagType;
+  defaultValue?: FlagReturnType;
   serve: unknown;
 }
 
 interface FlagsPageProps {
   projectId: string;
   projectName: string;
-  initialFlags: FlagWithStats[];
+  initialFlags: FlagType[];
 }
 
-type FlagType = string | number | boolean | object;
+type FlagReturnType = string | number | boolean | object;
 
 type FlagWithStats = Omit<F, "rules"> & {
   environments: FlagEnvironment[];
@@ -82,26 +84,40 @@ type FlagWithStats = Omit<F, "rules"> & {
   stats: { evaluations24h: number; lastEvaluated: string | null };
 };
 
-type Tag = 'LOW' | 'MEDIUM' | 'HIGH'
+type Tag = "LOW" | "MEDIUM" | "HIGH";
 
 function isEnabled(flag: FlagWithStats): boolean {
   return flag.rules.length > 0 && flag.defaultValue !== false;
 }
 
-export default function FlagsListPage({ projectId, projectName, initialFlags }: FlagsPageProps) {
+export default function FlagsList({
+  projectId,
+  projectName,
+  initialFlags,
+}: FlagsPageProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [flags, setFlags] = useState<FlagWithStats[]>(initialFlags);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "archived">(
-    "all",
-  );
-  const [typeFilter, setTypeFilter] = useState<FlagType | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive" | "archived"
+  >("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | FlagReturnType>("all");
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const { data, mutate } = useSWR<ApiFetchResult<FlagType[]>>(
+    `/flags?projectId=${projectId}`,
+    clientSideFetch,
+    {
+      fallbackData: { error: null, data: initialFlags },
+    }
+  );
+
+  console.log({ data }, "cleint");
+
+  const flags = data!.data || [];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -112,12 +128,8 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
     }
   }, [activeDropdown]);
 
-  // Get all unique tags
-  // const allTags = Array.from(new Set(flags.flatMap((flag) => flag.tags))).sort();
-  const allTags:  Tag[] = [];
-
   // Filter flags
-  const filteredFlags = flags.filter((flag) => {
+  const filteredFlags = data!.data!.filter((flag) => {
     // Search filter
     const matchesSearch =
       !searchQuery ||
@@ -139,7 +151,7 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
     // const matchesType = typeFilter === "all" || flag.type === typeFilter;
 
     // return matchesSearch && matchesTags && matchesStatus && matchesType;
-    return matchesSearch && matchesStatus
+    return matchesSearch && matchesStatus;
   });
 
   // Group flags by status
@@ -172,7 +184,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
 
         // Optimistic update
         setFlags((prev) =>
-          prev.map((f) => (f.id === flagId ? { ...f, enabled: !currentEnabled } : f)),
+          prev.map((f) =>
+            f.id === flagId ? { ...f, enabled: !currentEnabled } : f
+          )
         );
       } catch (err) {
         console.error(err);
@@ -209,8 +223,10 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
         // await archiveFlag(projectId, flagId);
         setFlags((prev) =>
           prev.map((f) =>
-            f.id === flagId ? { ...f, archived: true, archivedAt: new Date().toISOString() } : f,
-          ),
+            f.id === flagId
+              ? { ...f, archived: true, archivedAt: new Date().toISOString() }
+              : f
+          )
         );
       } catch (err) {
         console.error(err);
@@ -223,11 +239,17 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
 
   const handleDeleteFlag = async (flagId: string, isPermanent: boolean) => {
     if (isPermanent) {
-      alert("This flag is marked as permanent and cannot be deleted to prevent tech debt.");
+      alert(
+        "This flag is marked as permanent and cannot be deleted to prevent tech debt."
+      );
       return;
     }
 
-    if (!confirm("Are you sure? This will permanently delete the flag and all its rules.")) {
+    if (
+      !confirm(
+        "Are you sure? This will permanently delete the flag and all its rules."
+      )
+    ) {
       return;
     }
 
@@ -255,7 +277,7 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
@@ -276,7 +298,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
                 <span className="text-slate-600">/</span>
                 <h1 className="text-3xl font-bold text-white">{projectName}</h1>
               </div>
-              <p className="text-slate-400">Manage feature flags and rollout rules</p>
+              <p className="text-slate-400">
+                Manage feature flags and rollout rules
+              </p>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -285,7 +309,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
                 className="p-3 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition-colors disabled:opacity-50"
                 title="Refresh"
               >
-                <RefreshCw className={`w-5 h-5 ${isPending ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`w-5 h-5 ${isPending ? "animate-spin" : ""}`}
+                />
               </button>
               <button
                 onClick={handleCreateFlag}
@@ -318,9 +344,24 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
 
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard label="Total Flags" value={flags.length} icon={Flag} color="text-blue-400" />
-          <StatCard label="Enabled" value={flags.filter( f => isEnabled(f)).length} icon={CheckCircle2} color="text-green-400" />
-          <StatCard label="Disabled" value={flags.filter( f => !isEnabled(f)).length} icon={MinusCircle} color="text-amber-400" />
+          <StatCard
+            label="Total Flags"
+            value={flags.length}
+            icon={Flag}
+            color="text-blue-400"
+          />
+          <StatCard
+            label="Enabled"
+            value={flags.filter((f) => isEnabled(f)).length}
+            icon={CheckCircle2}
+            color="text-green-400"
+          />
+          <StatCard
+            label="Disabled"
+            value={flags.filter((f) => !isEnabled(f)).length}
+            icon={MinusCircle}
+            color="text-amber-400"
+          />
           <StatCard
             label="Archived"
             value={archivedFlags.length}
@@ -357,7 +398,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
               >
                 <Filter className="w-5 h-5" />
                 Filters
-                {(selectedTags.length > 0 || statusFilter !== "all" || typeFilter !== "all") && (
+                {(selectedTags.length > 0 ||
+                  statusFilter !== "all" ||
+                  typeFilter !== "all") && (
                   <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">
                     {selectedTags.length +
                       (statusFilter !== "all" ? 1 : 0) +
@@ -372,29 +415,37 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
               <div className="pt-4 border-t border-slate-700/50 space-y-4">
                 {/* Status Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Status
+                  </label>
                   <div className="flex flex-wrap gap-2">
-                    {(["all", "active", "inactive", "archived"] as const).map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => setStatusFilter(status)}
-                        className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-                          statusFilter === status
-                            ? "bg-blue-600 text-white"
-                            : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
-                        }`}
-                      >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </button>
-                    ))}
+                    {(["all", "active", "inactive", "archived"] as const).map(
+                      (status) => (
+                        <button
+                          key={status}
+                          onClick={() => setStatusFilter(status)}
+                          className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                            statusFilter === status
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
+                          }`}
+                        >
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
 
                 {/* Type Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Type
+                  </label>
                   <div className="flex flex-wrap gap-2">
-                    {(["all", "boolean", "string", "number", "json"] as const).map((type) => (
+                    {(
+                      ["all", "boolean", "string", "number", "json"] as const
+                    ).map((type) => (
                       <button
                         key={type}
                         onClick={() => setTypeFilter(type)}
@@ -413,7 +464,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
                 {/* Tags Filter */}
                 {allTags.length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Tags</label>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Tags
+                    </label>
                     <div className="flex flex-wrap gap-2">
                       {allTags.map((tag) => (
                         <button
@@ -434,7 +487,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
                 )}
 
                 {/* Clear Filters */}
-                {(selectedTags.length > 0 || statusFilter !== "all" || typeFilter !== "all") && (
+                {(selectedTags.length > 0 ||
+                  statusFilter !== "all" ||
+                  typeFilter !== "all") && (
                   <button
                     onClick={() => {
                       setSelectedTags([]);
@@ -474,7 +529,9 @@ export default function FlagsListPage({ projectId, projectName, initialFlags }: 
                 flag={flag}
                 projectId={projectId}
                 activeDropdown={activeDropdown}
-                onToggleDropdown={(id) => setActiveDropdown(activeDropdown === id ? null : id)}
+                onToggleDropdown={(id) =>
+                  setActiveDropdown(activeDropdown === id ? null : id)
+                }
                 onView={handleViewFlag}
                 onEdit={handleEditFlag}
                 onToggle={handleToggleFlag}
@@ -504,7 +561,9 @@ function StatCard({ label, value, icon: Icon, color }: StatCardProps) {
     <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 hover:border-slate-600/50 transition-all">
       <div className="flex items-center justify-between mb-3">
         <Icon className={`w-6 h-6 ${color}`} />
-        <span className="text-xs text-slate-500 uppercase tracking-wider">{label}</span>
+        <span className="text-xs text-slate-500 uppercase tracking-wider">
+          {label}
+        </span>
       </div>
       <p className="text-3xl font-bold text-white">{value}</p>
     </div>
@@ -537,9 +596,9 @@ function FlagCard({
   onDuplicate,
   onArchive,
   onDelete,
-  // isProcessing,
-}: FlagCardProps) {
-  const getTypeColor = (type: FlagType): string => {
+}: // isProcessing,
+FlagCardProps) {
+  const getTypeColor = (type: FlagReturnType): string => {
     switch (type) {
       case "boolean":
         return "bg-blue-500/10 text-blue-400 border-blue-500/30";
@@ -550,7 +609,7 @@ function FlagCard({
       case "json":
         return "bg-orange-500/10 text-orange-400 border-orange-500/30";
       default:
-        return "bg-blue-500/10 text-blue-400 border-blue-500/30"
+        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
     }
   };
 
@@ -559,7 +618,11 @@ function FlagCard({
     return enabled ? "text-green-400" : "text-amber-400";
   };
 
-  const StatusIcon = flag.archived ? Archive : flag.rules ? CheckCircle2 : MinusCircle;
+  const StatusIcon = flag.archived
+    ? Archive
+    : flag.rules
+    ? CheckCircle2
+    : MinusCircle;
 
   return (
     <div
@@ -575,10 +638,14 @@ function FlagCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-2">
                 <StatusIcon
-                  className={`w-5 h-5 flex-shrink-0 ${getStatusColor(!!flag.rules, flag.archived)}`}
+                  className={`w-5 h-5 flex-shrink-0 ${getStatusColor(
+                    !!flag.rules,
+                    flag.archived
+                  )}`}
                 />
-                <h3 className="text-lg font-semibold text-white truncate">{flag.description}</h3>
-
+                <h3 className="text-lg font-semibold text-white truncate">
+                  {flag.description}
+                </h3>
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <code className="text-sm text-slate-400 font-mono bg-slate-900/50 px-2 py-1 rounded">
@@ -593,7 +660,9 @@ function FlagCard({
                 </span> */}
               </div>
               {flag.description && (
-                <p className="text-slate-400 text-sm line-clamp-2 mb-3">{flag.description}</p>
+                <p className="text-slate-400 text-sm line-clamp-2 mb-3">
+                  {flag.description}
+                </p>
               )}
             </div>
           </div>
@@ -611,7 +680,9 @@ function FlagCard({
             {flag.stats?.evaluations24h !== undefined && (
               <div className="flex items-center gap-1.5">
                 <TrendingUp className="w-4 h-4" />
-                <span>{flag.stats.evaluations24h.toLocaleString()} evaluations (24h)</span>
+                <span>
+                  {flag.stats.evaluations24h.toLocaleString()} evaluations (24h)
+                </span>
               </div>
             )}
             <div className="flex items-center gap-1.5">
@@ -637,7 +708,10 @@ function FlagCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center gap-2 flex-shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Quick Toggle */}
           {/* {!flag.archived && (
             <button
@@ -691,10 +765,10 @@ function FlagCard({
                   Duplicate
                 </button>
                 <button
-                  onClick={() => onToggle(flag.id, (isEnabled(flag)))}
+                  onClick={() => onToggle(flag.id, isEnabled(flag))}
                   className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700 flex items-center gap-2"
                 >
-                  { isEnabled(flag) ? (
+                  {isEnabled(flag) ? (
                     <>
                       <ToggleLeft className="w-4 h-4" />
                       Disable
@@ -720,7 +794,9 @@ function FlagCard({
                   onClick={() => onDelete(flag.id, !flag.archived)}
                   disabled={flag.archived}
                   className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2 rounded-b-lg ${
-                    flag.archived ? "text-slate-600 cursor-not-allowed" : "text-red-400"
+                    flag.archived
+                      ? "text-slate-600 cursor-not-allowed"
+                      : "text-red-400"
                   }`}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -740,7 +816,9 @@ function EmptyState({ onCreateFlag }: { onCreateFlag: () => void }) {
   return (
     <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-12 text-center">
       <Flag className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-white mb-2">No feature flags yet</h3>
+      <h3 className="text-xl font-semibold text-white mb-2">
+        No feature flags yet
+      </h3>
       <p className="text-slate-400 mb-6">
         Create your first feature flag to start controlling rollouts
       </p>
@@ -761,8 +839,13 @@ function NoResultsState({ onClearFilters }: { onClearFilters: () => void }) {
     <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl p-12 text-center">
       <Search className="w-16 h-16 text-slate-600 mx-auto mb-4" />
       <h3 className="text-xl font-semibold text-white mb-2">No flags found</h3>
-      <p className="text-slate-400 mb-6">Try adjusting your search or filters</p>
-      <button onClick={onClearFilters} className="text-blue-400 hover:text-blue-300">
+      <p className="text-slate-400 mb-6">
+        Try adjusting your search or filters
+      </p>
+      <button
+        onClick={onClearFilters}
+        className="text-blue-400 hover:text-blue-300"
+      >
         Clear all filters
       </button>
     </div>

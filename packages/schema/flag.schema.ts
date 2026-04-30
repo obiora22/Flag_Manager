@@ -1,10 +1,7 @@
-import { ReturnValueType } from "@db/prisma/generated/client.js";
-import { BaseRule, baseRuleSchema } from "./project.schema.js";
-import { baseEnvironmentSchema } from "./environment.schema.js";
+import { ReturnValueType } from "@db/prisma/generated/client.ts";
 import { InputJsonValue } from "@db/prisma/generated/internal/prismaNamespace.js";
-
 import z from "zod";
-import { RulesSchema } from "./rule.schema.ts";
+import { rulesSchema } from "./rule.schema.ts";
 
 const EnvironmentSchema = z.object({
   environment: z.enum(["PRODUCTION", "DEVELOPMENT", "STAGING"]),
@@ -15,23 +12,21 @@ const EnvironmentSchema = z.object({
 export const baseFlagSchema = z.object({
   key: z.string(),
   description: z.string(),
-  rules: RulesSchema,
+  rules: rulesSchema,
   returnValueType: z.enum(ReturnValueType),
   defaultValue: z.json(),
   projectId: z.uuid(),
-  // environments: z.array(EnvironmentSchema).optional(),
+  enabled: z.boolean(),
+  archived: z.boolean(),
+  // createdAt: z.date().optional(),
+  // updatedAt: z.date().optional(),
 });
 
-export const updateFlagSchema = baseFlagSchema.extend({ id: z.string() });
-
-// export const updateFlagSchema = z.object({
-//   key: z.string().min(1).max(100).optional(),
-//   description: z.string().min(1).max(100),
-//   rules: RulesSchema,
-//   returnValueType: z.enum(ReturnValueType),
-//   defaultValue: z.json(),
-//   archived: z.boolean().optional(),
-// });
+export const updateFlagSchema = baseFlagSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At lease one field must be provided",
+  });
 
 export type BaseFlag = z.infer<typeof baseFlagSchema>;
 export type UpdateFlag = z.infer<typeof updateFlagSchema>;

@@ -1,13 +1,7 @@
-import { Project, PrismaClient } from "@db/prisma/generated/client.ts";
-import {
-  ProjectGetPayload,
-  ProjectInclude,
-} from "@db/prisma/generated/models.ts";
-
-import { narrowError } from "@repo/utils/narrowError.ts";
+import { PrismaClient } from "@db/prisma/generated/client.ts";
+import { ProjectGetPayload, ProjectInclude } from "@db/prisma/generated/models.ts";
 import { handleResult, handleError } from "@repo/utils/serviceReturn.ts";
 import { BaseProject, UpdateProject } from "@schema/project.schema.ts";
-import { includes } from "zod";
 
 const projectInclude = {
   users: true,
@@ -44,15 +38,9 @@ export class ProjectServices {
           flagCount,
         };
       });
-
-      console.log({ transformData });
-      return {
-        ok: true,
-        data: transformData,
-        error: null,
-      } as const;
+      return handleResult(transformData);
     } catch (err) {
-      return { ok: false, data: null, error: narrowError(err) } as const;
+      return handleError(err);
     }
   }
 
@@ -62,40 +50,32 @@ export class ProjectServices {
         where: { id },
       });
 
-      return handleResult<Project>(project);
+      return handleResult(project);
     } catch (err) {
       return handleError(err);
     }
   }
 
-  static async createProject(
-    dbClientInstance: PrismaClient,
-    formBody: BaseProject
-  ) {
+  static async createProject(dbClientInstance: PrismaClient, formBody: BaseProject) {
     try {
-      const response = await dbClientInstance.project.create({
+      const newProject = await dbClientInstance.project.create({
         data: formBody,
       });
 
-      return handleResult(response);
+      return handleResult(newProject);
     } catch (err) {
       return handleError(err);
     }
   }
 
-  static async updateProject(
-    dbClientInstance: PrismaClient,
-    id: string,
-    formBody: BaseProject
-  ) {
-    console.log({ formBody });
+  static async updateProject(dbClientInstance: PrismaClient, id: string, formBody: UpdateProject) {
     try {
-      const response = await dbClientInstance.project.update({
+      const updatedProject = await dbClientInstance.project.update({
         where: { id },
         data: formBody,
       });
 
-      return handleResult(response);
+      return handleResult(updatedProject);
     } catch (err) {
       return handleError(err);
     }
@@ -103,10 +83,10 @@ export class ProjectServices {
 
   static async deleteProject(dbClientInstance: PrismaClient, id: string) {
     try {
-      const r = await dbClientInstance.project.delete({
+      const deletedProject = await dbClientInstance.project.delete({
         where: { id },
       });
-      return handleResult(r);
+      return handleResult(deletedProject);
     } catch (err) {
       return handleError(err);
     }

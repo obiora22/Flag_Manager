@@ -29,9 +29,12 @@ function buildServer() {
 
   app.register(authPlugin);
 
-  /* Midldlewares */
+  /* Middlewares */
   app.register(cors, {
-    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    origin: ["*"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    maxAge: 60 * 60 * 24,
   });
 
   app.register(helmet);

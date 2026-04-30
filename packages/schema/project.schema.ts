@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  Flag,
-  FlagEnvironmentType,
-  ReturnValueType,
-} from "@db/prisma/generated/client.ts";
+import { Flag, FlagEnvironmentType, ReturnValueType } from "@db/prisma/generated/client.ts";
 
 const returnValue = z.union([z.number(), z.string(), z.boolean(), z.json()]);
 
@@ -31,10 +27,13 @@ export const baseProjectSchema = z.object({
   name: z.string(),
   slug: z.string(),
   organizationId: z.string(),
-  // flags: z.array(baseFlagSchema),
 });
 
-export const updateProjectSchema = baseProjectSchema.extend({ id: z.string() });
+export const updateProjectSchema = baseProjectSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });
 
 export type BaseProject = z.infer<typeof baseProjectSchema>;
 

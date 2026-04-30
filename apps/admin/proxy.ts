@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type AppRouteHandlerFn = (
   req: NextRequest,
-  ctx: { params: Promise<Record<string, string | string[]>> }
+  ctx: { params: Promise<Record<string, string | string[]>> },
 ) => void | Response | Promise<Response | void>;
 
 const { auth } = NextAuth(authConfig);
@@ -15,13 +15,9 @@ export const proxy: AppRouteHandlerFn = auth(async (request: NextRequest) => {
   const authRoutes = ["/signin", "/signup", "/reset-password"];
 
   const isProtectedRoute =
-    pathname === "/" ||
-    protectedRoutes.some((route) => pathname.startsWith(route));
+    pathname === "/" || protectedRoutes.some((route) => pathname.startsWith(route));
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-
-  console.log({ isProtectedRoute }, pathname);
-  console.log({ isAuthRoute }, pathname);
 
   const csrf_token = request.cookies.get("authjs.csrf-token")?.value;
   const session_token = request.cookies.get("authjs.session-token")?.value;

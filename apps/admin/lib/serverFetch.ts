@@ -1,34 +1,40 @@
 import { auth } from "@admin/auth.ts";
 import jwt from "jsonwebtoken";
-
-export interface ApiFetchResult<T> {
-  ok: boolean;
-  data: T | null;
-  error: string | null;
-}
+type FetchResponse<T> =
+  | {
+      status: "success";
+      payload: T;
+    }
+  | {
+      status: "network-error";
+      error: string;
+    }
+  | {
+      status: "api-error";
+      error: string;
+    };
 
 export async function apiFetchClient<T>(
   path: string,
-  options: RequestInit = {}
-): Promise<ApiFetchResult<T>> {
+  options: RequestInit = {},
+): Promise<FetchResponse<T>> {
   const API_URL = process.env.DEVELOPMENT_API_URL;
   const AUTH_SECRET = process.env.AUTH_SECRET;
   const session = await auth();
-  console.log(`Fetching \`${API_URL}${path}\`...`);
+
   if (!AUTH_SECRET || !API_URL)
     return {
-      ok: false,
-      data: null,
+      status: "api-error",
       error: "Request failed: Missing environment variable(s)",
     };
 
   if (!session) {
     return {
-      ok: false,
-      data: null,
+      status: "api-error",
       error: "User is not authenticated!",
     };
   }
+
   const token = jwt.sign(
     {
       sub: session.user.id,
@@ -37,9 +43,9 @@ export async function apiFetchClient<T>(
       memberships: session.user.memberships,
     },
     AUTH_SECRET,
-    { expiresIn: 30 * 24 * 60 }
+    { expiresIn: 30 * 24 * 60 },
   );
-
+  console.log(`Fetch ...${API_URL}${path}`);
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
@@ -48,10 +54,15 @@ export async function apiFetchClient<T>(
       ...options.headers,
     },
   });
-  console.log(response);
 
-  if (!response.ok)
-    return { ok: response.ok, data: null, error: await response.text() };
-
-  return await response.json();
+  if (!response.ok) {
+    return {
+      status: "network-error",
+      error: await response.text(),
+    };
+  }
+  return {
+    status: "success",
+    payload: await response.json(),
+  };
 }
