@@ -4,20 +4,17 @@ import { Dashboard } from "@admin/components/homePage";
 import { apiFetchClient } from "@admin/lib/serverFetch";
 import { DashboardData } from "@api/src/routes/dashboard.routes";
 import { checkUserSession } from "@admin/lib/auth-helpers.ts";
-import {ErrorState} from "@admin/components/ErrorState"
+import { ErrorState } from "@admin/components/ErrorState";
+import { APIResult } from "@repo/utils/serviceReturn";
 
 export default async function Home() {
   const session = await checkUserSession();
 
-  const { data, error } = await apiFetchClient<DashboardData>("/dashboard");
+  const result = await apiFetchClient<APIResult<DashboardData>>("/dashboard");
 
-  if (error) {
-    return <ErrorState />;
+  if (result.status !== "success" || result.payload.status !== "success") {
+    return <ErrorState message="Failed to load dashboard data" />;
   }
 
-  if (!data) {
-    return <EmptyState />
-  }
-
-  return <Dashboard dashboardData={data} session={session} />;
+  return <Dashboard dashboardData={result.payload.data} session={session} />;
 }

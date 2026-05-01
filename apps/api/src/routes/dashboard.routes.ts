@@ -1,6 +1,7 @@
 import { Organization } from "@db/prisma/generated/client.ts";
 import { OrganizationInclude, OrganizationGetPayload } from "@db/prisma/generated/models.ts";
 import { narrowError } from "@repo/utils/narrowError.ts";
+import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 const orgInclude = {
@@ -25,7 +26,7 @@ export interface DashboardData {
 export default async function dashboardRoutes(fastify: FastifyInstance) {
   fastify.get("/dashboard", async (request: FastifyRequest, reply: FastifyReply) => {
     const orgId = request.user?.activeOrgId;
-    console.log({ orgId }, request.user);
+
     try {
       const data = await fastify.prisma.organization.findUnique({
         where: {
@@ -35,11 +36,7 @@ export default async function dashboardRoutes(fastify: FastifyInstance) {
       });
 
       if (!data) {
-        return reply.send({
-          ok: true,
-          data,
-          error: null,
-        });
+        return reply.send(handleResult(data));
       }
 
       const { name, id } = data;
@@ -52,23 +49,17 @@ export default async function dashboardRoutes(fastify: FastifyInstance) {
         return (flagTotal += prev.flags.length);
       }, 0);
 
-      return reply.send({
-        ok: true,
-        data: {
+      return reply.send(
+        handleResult({
           id,
           name,
           totalFlags,
           totalProjects,
           totalMembership,
-        },
-        error: null,
-      });
+        }),
+      );
     } catch (err) {
-      return reply.status(500).send({
-        ok: false,
-        data: null,
-        error: narrowError(err),
-      });
+      return reply.send(handleError(err));
     }
   });
 }

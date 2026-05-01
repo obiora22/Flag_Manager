@@ -1,42 +1,42 @@
-import { apiFetchClient, ApiFetchResult } from "@admin/lib/fetchClient";
+import { FetchResponse } from "@admin/lib/clientFetch";
+import { apiFetchClient } from "@admin/lib/serverFetch";
+import { APIResult } from "@repo/utils/serviceReturn";
 import { BaseFlag, UpdateFlag } from "@schema/flag.schema";
 
-export async function getFlags(path: string): Promise<ApiFetchResult<BaseFlag[]>> {
-  const { ok, data, error } = await apiFetchClient<BaseFlag[]>(path);
-  return { ok, data, error };
+export async function getFlags(path: string): Promise<FetchResponse<APIResult<BaseFlag[]>>> {
+  return await apiFetchClient<APIResult<BaseFlag[]>>(path);
 }
 
-export async function getFlag(path: string, flagId: string): Promise<ApiFetchResult<BaseFlag>> {
-  const { ok, data, error } = await apiFetchClient<BaseFlag>(`${path}/${flagId}`);
-  return { ok, data, error };
+export async function getFlag(
+  path: string,
+  flagId: string,
+): Promise<FetchResponse<APIResult<BaseFlag>>> {
+  return await apiFetchClient<APIResult<BaseFlag>>(`${path}/${flagId}`);
 }
 
 export async function createAction(
   path: string,
-  payload: BaseFlag
-): Promise<ApiFetchResult<BaseFlag>> {
-  const { ok, data, error } = await apiFetchClient<BaseFlag>(path, {
+  payload: BaseFlag,
+): Promise<FetchResponse<APIResult<BaseFlag>>> {
+  return await apiFetchClient<APIResult<BaseFlag>>(path, {
     method: "POST",
     body: JSON.stringify(payload),
   });
-  return { ok, data, error };
 }
 
 export async function updateAction(
   path: string,
-  payload: UpdateFlag
-): Promise<ApiFetchResult<UpdateFlag>> {
-  const { ok, data, error } = await apiFetchClient<UpdateFlag>(path, {
+  payload: UpdateFlag,
+): Promise<FetchResponse<APIResult<UpdateFlag>>> {
+  return await apiFetchClient<APIResult<UpdateFlag>>(path, {
     method: "PUT",
     body: JSON.stringify(payload),
   });
-  return { ok, data, error };
 }
 
 export async function deleteAction(
   path: string,
-  flagId: string
-): Promise<ApiFetchResult<BaseFlag>> {
-  const { ok, data, error } = await apiFetchClient<BaseFlag>(`${path}/${flagId}`);
-  return { ok, data, error };
+  flagId: string,
+): Promise<FetchResponse<APIResult<BaseFlag>>> {
+  return await apiFetchClient<APIResult<BaseFlag>>(`${path}/${flagId}`);
 }

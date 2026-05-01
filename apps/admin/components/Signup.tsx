@@ -12,7 +12,7 @@ const initialState = {
   passwordConfirmation: "",
 };
 
-export default function SignupPage() {
+export function Signup() {
   const [form, setForm] = useState(initialState);
   const [passwordConfirmation, setPasswordConfirmation] = useState(true);
   const [state, formAction] = useActionState(accountRegistration, {

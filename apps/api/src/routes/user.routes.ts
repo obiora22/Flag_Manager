@@ -6,7 +6,7 @@ import {
   RequestGenericInterface,
 } from "fastify";
 import { User } from "@db/prisma/generated/client.js";
-import { UpdateUserSchema, BaseUserSchema, BaseUser, UpdateUser } from "@schema/user.schema.js";
+import { UpdateUserSchema, baseUserSchema, BaseUser, UpdateUser } from "@schema/user.schema.js";
 import { UserServices } from "@api/src/services/userServices.ts";
 import { z } from "zod";
 
@@ -24,16 +24,16 @@ interface MyRequest<T> extends RequestGenericInterface {
 export async function userRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
   fastify.get("/users", {
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
-      const { ok, data, error } = await UserServices.getUsers(fastify.prisma);
-      fastify.prisma;
-      return reply.send({ ok, data, error });
+      const result = await UserServices.getUsers(fastify.prisma);
+      // fastify.prisma;
+      return reply.send(result);
     },
   });
 
   fastify.get("/users/id/:id", {
     handler: async (
       request: FastifyRequest<RequestParams<{ id: string }>>,
-      reply: FastifyReply
+      reply: FastifyReply,
     ) => {
       const { id } = request.params;
       const { ok, data, error } = await UserServices.getUser(id, fastify.prisma);
@@ -50,16 +50,9 @@ export async function userRoutes(fastify: FastifyInstance, options: FastifyPlugi
     handler: async (request: FastifyRequest<MyRequest<{ email: string }>>, reply: FastifyReply) => {
       const { email } = request.query;
       const decodedEmail = decodeURIComponent(email);
-      const { ok, data, error } = await UserServices.getUserCredentials(
-        decodedEmail,
-        fastify.prisma
-      );
+      const result = await UserServices.getUserCredentials(decodedEmail, fastify.prisma);
 
-      return reply.send({
-        ok,
-        data,
-        error,
-      });
+      return reply.send(result);
     },
   });
 

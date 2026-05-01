@@ -1,10 +1,11 @@
 import { User, PrismaClient, Prisma } from "@db/prisma/generated/client.ts";
 import { narrowError } from "@repo/utils/narrowError.ts";
-import BaseUserSchema, { BaseUser, UpdateUser } from "@schema/user.schema.ts";
+import { BaseUser, UpdateUser, baseUserSchema } from "@schema/user.schema.ts";
 import { prismaClientInstance as pCI } from "@db/lib/prismaClient.ts";
 import z from "zod";
 import { genSalt, hash } from "bcrypt-ts";
 import { UserGetPayload, UserInclude } from "@db/prisma/generated/models.ts";
+import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
 
 type ServiceResult<T> =
   | {
@@ -51,17 +52,9 @@ export class UserServices {
   static async getUsers(prismaClientInstance: PrismaClient) {
     try {
       const users = await pCI.user.findMany();
-      return {
-        data: users,
-        ok: true,
-        error: null,
-      } as const;
+      return handleResult(users);
     } catch (err) {
-      return {
-        data: null,
-        ok: false,
-        error: narrowError(err).message,
-      } as const;
+      return handleError(err);
     }
   }
 
@@ -87,7 +80,7 @@ export class UserServices {
 
   static async getUserCredentials(
     email: string,
-    prismaClientInstance: PrismaClient
+    prismaClientInstance: PrismaClient,
   ): Promise<ServiceResult<UserIncludeCredentials>> {
     try {
       const user = await prismaClientInstance.user.findUnique({
@@ -110,7 +103,7 @@ export class UserServices {
   }
 
   static async createUser(payload: BaseUser, prismaClientInstance: PrismaClient) {
-    const { data: user, error } = BaseUserSchema.safeParse(payload);
+    const { data, error } = baseUserSchema.safeParse(payload);
 
     if (error) {
       return {
@@ -119,10 +112,10 @@ export class UserServices {
         error: z.flattenError(error),
       };
     }
-    const hash = await hashGenerator(user.password);
+    // const hash = await hashGenerator(user.password);
     try {
       const newUser = await prismaClientInstance.user.create({
-        data: { ...user, password: hash },
+        data,
       });
       if (!newUser)
         return {
