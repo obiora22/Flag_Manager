@@ -1,4 +1,4 @@
-import type { Flag } from "@db/prisma/generated/client.ts";
+import type { Flag, Prisma } from "@db/prisma/generated/client.ts";
 import type {
   FlagGetPayload,
   FlagInclude,
@@ -57,3 +57,5 @@ export interface DashboardData {
   totalProjects: string;
   totalMembership: string;
 }
+
+export type PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError;

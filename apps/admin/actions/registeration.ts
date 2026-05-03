@@ -1,6 +1,6 @@
 "use server";
-import { AccountInputSchema } from "@schema/account.schema";
 import { narrowError } from "@repo/utils/narrowError";
+import { AccountInputSchema } from "@schema/account.schema";
 
 export interface AccountRegistrationState {
   ok: boolean;
@@ -15,7 +15,7 @@ const API_URL =
 
 export async function accountRegistration(
   prevState: AccountRegistrationState,
-  payload: FormData
+  payload: FormData,
 ): Promise<AccountRegistrationState> {
   console.log("server action!", { payload }, process.env);
 
