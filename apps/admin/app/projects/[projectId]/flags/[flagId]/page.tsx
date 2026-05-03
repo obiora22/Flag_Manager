@@ -3,7 +3,7 @@ import { FlagDetails } from "@admin/components/FlagDetails.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
 import { apiFetchClient } from "@admin/lib/serverFetch.ts";
 import { ErrorState } from "@admin/components/ErrorState";
-import { BasicFlag } from "@api/src/services/flagService";
+import type { CompositeFlag } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
 
 interface Props {
@@ -22,7 +22,7 @@ export default async function FlagPage({ params, searchParams }: Props) {
   const { projectId, flagId } = await params;
   const { projectName } = await searchParams;
 
-  const result = await apiFetchClient<APIResult<BasicFlag>>(`/flags/${flagId}`);
+  const result = await apiFetchClient<APIResult<CompositeFlag>>(`/flags/${flagId}`);
 
   if (result.status !== "success" || result.payload.status !== "success") {
     return <ErrorState message="something went wrong. Try again." />;

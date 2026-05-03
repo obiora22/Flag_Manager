@@ -22,6 +22,7 @@ export class FlagService {
         where: {
           projectId,
         },
+        include: flagInclude,
       });
       return handleResult(flags);
     } catch (err) {

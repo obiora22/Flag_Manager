@@ -25,8 +25,8 @@ export interface DashboardData {
 
 export default async function dashboardRoutes(fastify: FastifyInstance) {
   fastify.get("/dashboard", async (request: FastifyRequest, reply: FastifyReply) => {
-    const orgId = request.user?.activeOrgId;
-
+    const orgId = request?.user ? request.user?.activeOrgId : null;
+    if (!orgId) return reply.send(handleError("organization missing"));
     try {
       const data = await fastify.prisma.organization.findUnique({
         where: {

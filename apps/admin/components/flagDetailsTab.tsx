@@ -24,7 +24,7 @@ import Modal from "@admin/components/Modal.tsx";
 import RuleBuilderForm from "@admin/components/RuleFormBuilder.tsx";
 import { clientSideFetch } from "@admin/lib/clientFetch";
 import { useTransitionWrapper } from "@admin/lib/useTransitionWrapper.tsx";
-import { BasicFlag, CompositeFlag } from "@api/src/services/flagService";
+import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
 import { rulesSchema } from "@schema/rule.schema";
 
@@ -61,7 +61,7 @@ export function RulesTab({ flag, setFlag, expandedRules, onToggleRule }: RulesTa
         setSubmissionError(result.error);
       } else if (result.payload.status === "error") {
         setSubmissionError(result.payload.error);
-      } else {
+      } else if (result.payload.status === "success") {
         const updatedFlag = result.payload.data;
         const { error, data } = rulesSchema.safeParse(updatedFlag.rules);
         if (error) {

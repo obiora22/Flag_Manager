@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { ProjectData } from "@api/src/services/projectServices.ts";
+import type { ProjectData } from "@api/lib/contracts";
 
 interface Props {
   filteredProjects: ProjectData[];
@@ -22,16 +22,16 @@ interface Props {
   setActiveDropdown: (val: string | null) => void;
   openFlagForm: () => void;
   openProjectForm: () => void;
+  closeProjectForm: () => void;
   setSelectedProject: (project: ProjectData) => void;
 }
 export function ProjectsGridLayout({
   filteredProjects,
   activeDropdown,
   setActiveDropdown,
-  openProjectForm,
   setSelectedProject,
-  openFlagForm,
-  closeFlagForm,
+  openProjectForm,
+  closeProjectForm,
 }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

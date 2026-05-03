@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Condition, Rule } from "@db/types/rules.ts";
-// interface Props {}
+import { Condition } from "@db/types/rules.ts";
 
 const operators = [
   "equals",
@@ -27,7 +26,7 @@ const inputClassName =
 
 export function RuleForm({ onClose }: Props) {
   const [isPending] = React.useTransition();
-  const [conditions, setConditions] = useState<Condition>([]);
+  const [conditions, setConditions] = useState<Condition[]>([]);
   const [ruleFormData, setRuleFormData] = useState({
     rule: {
       key: "",
@@ -42,9 +41,7 @@ export function RuleForm({ onClose }: Props) {
     },
   });
 
-  const { rule, condition } = ruleFormData;
-
-  const handleSubmit = (d: typeof ruleFormData) => {};
+  const { condition } = ruleFormData;
 
   return (
     <div className={"border p-4 rounded-md"}>
@@ -88,10 +85,7 @@ export function RuleForm({ onClose }: Props) {
           </select>
         </div>
         <div>
-          <label
-            htmlFor="valueType"
-            className="block text-sm font-medium text-slate-300 mb-2"
-          >
+          <label htmlFor="valueType" className="block text-sm font-medium text-slate-300 mb-2">
             value type <span className="text-red-400">*</span>
           </label>
           <select
@@ -115,10 +109,7 @@ export function RuleForm({ onClose }: Props) {
           </select>
         </div>
         <div>
-          <label
-            htmlFor="value"
-            className="block text-sm font-medium text-slate-300 mb-2"
-          >
+          <label htmlFor="value" className="block text-sm font-medium text-slate-300 mb-2">
             value <span className="text-red-400">*</span>
           </label>
 

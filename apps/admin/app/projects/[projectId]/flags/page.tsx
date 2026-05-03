@@ -1,11 +1,8 @@
 import { checkUserSession } from "@admin/lib/auth-helpers.ts";
 import { apiFetchClient } from "@admin/lib/serverFetch";
 import { ErrorState } from "@admin/components/ErrorState";
-import { EmptyState } from "@admin/components/EmptyState.tsx";
 import Flags from "@admin/components/Flags";
-import { FlagType } from "@admin/app/projects/[projectId]/flags/[flagId]/types.ts";
-import { CompositeFlag } from "@api/src/services/flagService";
-import { ApiError } from "next/dist/server/api-utils";
+import type { CompositeFlag } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
 
 export default async function FlagsPage({

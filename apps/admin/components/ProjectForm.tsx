@@ -1,6 +1,6 @@
 import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useMemo, useState, useTransition } from "react";
-import { ProjectData } from "@api/src/services/projectServices";
+import type { ProjectData } from "@api/lib/contracts";
 import { isEqual } from "lodash";
 import { clientSideFetch } from "@admin/lib/clientFetch";
 import { APIResult } from "@repo/utils/serviceReturn";

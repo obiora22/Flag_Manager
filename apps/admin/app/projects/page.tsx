@@ -3,7 +3,7 @@ import { ErrorState } from "@admin/components/ErrorState";
 import { ProjectList } from "@admin/components/Project/ProjectList.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import { ProjectData } from "@api/src/services/projectServices";
+import type { ProjectData } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
 
 export default async function ProjectPage() {

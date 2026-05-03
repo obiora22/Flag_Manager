@@ -2,11 +2,8 @@
 import React, { Suspense, useState } from "react";
 
 import { FolderKanban, Plus } from "lucide-react";
-import { ProjectData } from "@api/src/services/projectServices.ts";
-import {
-  ProjectsGridLayout,
-  ProjectsListLayout,
-} from "@admin/components/Project/ProjectsGridLayout.tsx";
+import type { ProjectData } from "@api/lib/contracts";
+import { ProjectsGridLayout, ProjectsListLayout } from "@admin/components/Project/ProjectsLayout";
 import { ViewAndSearch } from "@admin/components/Project/ViewAndSearch.tsx";
 import { ProjectForm } from "@admin/components/ProjectForm.tsx";
 import dynamic from "next/dynamic";
@@ -115,6 +112,7 @@ export function ProjectList({ projectData: projects, organizationId }: Props) {
                 setActiveDropdown={setActiveDropdown}
                 openFlagForm={() => setFlagFormOpen(true)}
                 openProjectForm={() => setOpenProjectForm(true)}
+                closeProjectForm={() => setOpenProjectForm(false)}
                 setSelectedProject={(p: ProjectData) => setSelectedProject(p)}
               />
             ) : (

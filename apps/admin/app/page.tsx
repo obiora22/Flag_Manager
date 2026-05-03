@@ -2,7 +2,7 @@
 
 import { Dashboard } from "@admin/components/homePage";
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import { DashboardData } from "@api/src/routes/dashboard.routes";
+import type { DashboardData } from "@api/lib/contracts";
 import { checkUserSession } from "@admin/lib/auth-helpers.ts";
 import { ErrorState } from "@admin/components/ErrorState";
 import { APIResult } from "@repo/utils/serviceReturn";

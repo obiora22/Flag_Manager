@@ -2,7 +2,7 @@ import React, { SetStateAction, useMemo, useState, useTransition } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { BaseFlag } from "@schema/flag.schema.ts";
 import { isEqual } from "lodash";
-import { BasicFlag, CompositeFlag } from "@api/src/services/flagService";
+import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
 import { clientSideFetch } from "@admin/lib/clientFetch";
 import { APIResult } from "@repo/utils/serviceReturn";
 
@@ -52,7 +52,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
     setError(null);
 
     const createFlag = async () => {
-      const response = await clientSideFetch<APIResult<BasicFlag>>("/flags", {
+      const response = await clientSideFetch<APIResult<CompositeFlag>>("/flags", {
         method: "POST",
         body: JSON.stringify(formData),
       });

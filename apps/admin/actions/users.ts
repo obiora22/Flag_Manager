@@ -3,7 +3,7 @@
 import { apiFetchClient } from "@admin/lib/serverFetch";
 import { narrowError } from "@repo/utils/narrowError";
 import { BaseUser } from "@schema/user.schema";
-import { UserIncludeCredentials } from "@api/src/services/userServices";
+import type { UserIncludeCredentials } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
 import { FetchResponse } from "@admin/lib/clientFetch";
 

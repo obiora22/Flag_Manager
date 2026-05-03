@@ -27,7 +27,7 @@ import useSWR from "swr";
 import { APIResult } from "@repo/utils/serviceReturn";
 import { ErrorState } from "./ErrorState";
 import { Flag } from "@db/prisma/generated/client";
-import { CompositeFlag } from "@api/src/services/flagService";
+import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
 
 interface FlagsListProps {
   projectId: string;
@@ -42,7 +42,7 @@ export default function Flags({ projectId, projectName, initialFlags }: FlagsLis
   const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "archived">("all");
-  const [typeFilter, setTypeFilter] = useState<"all" | CompositeFlag["returnValueType"]>("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | BasicFlag["returnValueType"]>("all");
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [targetFlag, setTargetFlag] = useState<CompositeFlag | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -368,7 +368,7 @@ function StatCard({ label, value, icon: Icon, color }: StatCardProps) {
 }
 
 interface FlagCardProps {
-  flag: FlagType;
+  flag: CompositeFlag;
   projectId: string;
   activeDropdown: string | null;
   onToggleDropdown: (id: string) => void;
@@ -391,7 +391,7 @@ function FlagCard({
   onDelete,
   isProcessing,
 }: FlagCardProps) {
-  const getTypeColor = (type: FlagType["returnValueType"]): string => {
+  const getTypeColor = (type: BasicFlag["returnValueType"]): string => {
     switch (type) {
       case "BOOLEAN":
         return "bg-blue-500/10 text-blue-400 border-blue-500/30";
@@ -404,11 +404,11 @@ function FlagCard({
     }
   };
 
-  const getStatusColor = (flag: FlagType): string => {
+  const getStatusColor = (flag: CompositeFlag): string => {
     return flag.archived ? "text-slate-400" : flag.enabled ? "text-green-400" : "text-slate-400";
   };
 
-  const formatValue = (value: unknown, type: FlagType["returnValueType"]): string => {
+  const formatValue = (value: unknown, type: BasicFlag["returnValueType"]): string => {
     if (type === "BOOLEAN") return value ? "true" : "false";
     if (type === "JSON") return JSON.stringify(value);
     return String(value);

@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { OrgSwitcher } from "./orgSwitcher";
-import { DashboardData } from "@api/src/routes/dashboard.routes";
+import type { DashboardData } from "@api/lib/contracts";
 import { Session } from "next-auth";
 import Link from "next/link";
 

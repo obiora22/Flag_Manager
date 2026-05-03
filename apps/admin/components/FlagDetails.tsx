@@ -31,11 +31,11 @@ import { ApiResult } from "@api/lib/types";
 import { Banner } from "./Banner";
 import { trimLastSegment } from "@admin/lib/trimLastSegment";
 import Link from "next/link";
-import { BasicFlag } from "@api/src/services/flagService";
+import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
 import { FlagEnvironment } from "@db/prisma/generated/client";
 
 interface FlagDetailPageProps {
-  flag: BasicFlag;
+  flag: CompositeFlag;
   projectId: string;
   projectName: string;
 }
@@ -62,7 +62,7 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
   const FLAG_IS_ENABLED = flag.enabled;
   const pathname = usePathname();
 
-  const handleArchive = (flag: BasicFlag) => {
+  const handleArchive = (flag: CompositeFlag) => {
     if (!confirm("Archive this flag? It will stop evaluating but can be restored.")) {
       return;
     }
@@ -307,7 +307,7 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
   );
 }
 
-function OverviewTab({ flag }: { flag: BasicFlag; environments: FlagEnvironment[] }) {
+function OverviewTab({ flag }: { flag: CompositeFlag; environments: FlagEnvironment[] }) {
   return (
     <div className="">
       {/* Main Info */}

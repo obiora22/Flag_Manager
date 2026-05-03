@@ -1,6 +1,6 @@
 import { Flag } from "@db/prisma/generated/client.ts";
 import { JsonArray } from "@db/prisma/generated/internal/prismaNamespace.js";
-import { RulesSchema } from "@schema/rule.schema.js";
+import { rulesSchema } from "@schema/rule.schema.js";
 import { createHash } from "crypto";
 
 type Operator =
@@ -86,16 +86,10 @@ export const operatorFns: Record<Operator, OperatorFn> = {
     return matchTypes("number", userValue, ruleValue) && userValue;
   },
   startsWith: (userValue: any, ruleValue: any): boolean => {
-    return (
-      matchTypes("string", userValue, ruleValue) &&
-      ruleValue.startsWith(userValue)
-    );
+    return matchTypes("string", userValue, ruleValue) && ruleValue.startsWith(userValue);
   },
   endsWith: (userValue: any, ruleValue: any): boolean => {
-    return (
-      matchTypes("string", userValue, ruleValue) &&
-      ruleValue.endsWith(userValue)
-    );
+    return matchTypes("string", userValue, ruleValue) && ruleValue.endsWith(userValue);
   },
   greaterThan: function (userValue: any, ruleValue: any): boolean {
     throw new Error("Function not implemented.");
@@ -111,17 +105,11 @@ const user: Record<string, unknown> = {
   bucket: 22.3798,
 };
 
-function checkConditions(
-  conditions: Condition[],
-  user: Record<string, unknown>
-) {
+function checkConditions(conditions: Condition[], user: Record<string, unknown>) {
   return conditions.length === 0
     ? true
     : conditions.every((condition) => {
-        return operatorFns[condition.operator](
-          user[condition.attribute],
-          condition.value
-        );
+        return operatorFns[condition.operator](user[condition.attribute], condition.value);
       });
 }
 
@@ -137,10 +125,7 @@ function getUserBucket(userId: string) {
   return Number(hashInt % 100n);
 }
 
-function RuleEngine(
-  rule: Rule,
-  user: Record<string, unknown> & { id: string }
-) {
+function RuleEngine(rule: Rule, user: Record<string, unknown> & { id: string }) {
   const { conditions, rollout, serve } = rule;
 
   if (!conditions) return serve;
@@ -160,7 +145,7 @@ function RuleEngine(
 
 // Resolve Prisma JSON type with a schema type
 function parseRules(json: unknown) {
-  return RulesSchema.parse(json);
+  return rulesSchema.parse(json);
 }
 
 function evaluateFlag(flag: Flag, user: any) {

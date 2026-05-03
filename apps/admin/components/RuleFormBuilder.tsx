@@ -4,9 +4,8 @@ import React, { SetStateAction, useState, useTransition } from "react";
 import { Rule } from "@db/types/rules.ts";
 import { Plus, Trash2, GripVertical, Zap, Users, AlertCircle, Loader2, Info } from "lucide-react";
 import { clientSideFetch } from "@admin/lib/clientFetch.ts";
-import { FlagType } from "@admin/app/projects/[projectId]/flags/[flagId]/types.ts";
 import { ApiResult } from "@api/lib/types.ts";
-import { BasicFlag, CompositeFlag } from "@api/src/services/flagService";
+import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
 import { rulesSchema } from "@schema/rule.schema";
 
 type Operator =
@@ -43,7 +42,7 @@ interface RuleFormData {
 }
 
 interface RuleBuilderFormProps {
-  flag: FlagType;
+  flag: CompositeFlag;
   flagType: "BOOLEAN" | "STRING" | "NUMBER" | "JSON";
   existingRule?: Rule;
   onSuccess?: (ruleId: string) => void;
