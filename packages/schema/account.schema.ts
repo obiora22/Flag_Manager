@@ -25,8 +25,8 @@ export const passwordSchema = z
 
 export const AccountInputSchema = z.object({
   organizationName: z.string().min(1),
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
+  firstname: z.string().min(2),
+  lastname: z.string().min(2),
   email: z.email(),
   password: z.string().min(10),
   passwordConfirmation: z.string().min(10),

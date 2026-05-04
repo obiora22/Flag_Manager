@@ -1,11 +1,11 @@
 "use client";
 
-import { accountRegistration } from "@admin/actions/registeration";
+import { accountRegistrationAction } from "@admin/actions/registration";
 import { useState, useActionState } from "react";
 
 const initialState = {
-  firstName: "",
-  lastName: "",
+  firstname: "",
+  lastname: "",
   email: "",
   organizationName: "",
   password: "",
@@ -15,16 +15,12 @@ const initialState = {
 export function Signup() {
   const [form, setForm] = useState(initialState);
   const [passwordConfirmation, setPasswordConfirmation] = useState(true);
-  const [state, formAction] = useActionState(accountRegistration, {
-    ok: false,
-    data: null,
-    error: null,
+  const [_, formAction, isPending] = useActionState(accountRegistrationAction, {
+    status: "idle",
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-  console.log({ state });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -37,7 +33,7 @@ export function Signup() {
             <input
               type="text"
               name="firstName"
-              value={form.firstName}
+              value={form.firstname}
               onChange={handleChange}
               placeholder="First Name"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -49,7 +45,7 @@ export function Signup() {
             <input
               type="text"
               name="lastName"
-              value={form.lastName}
+              value={form.lastname}
               onChange={handleChange}
               placeholder="Last Name"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -108,13 +104,10 @@ export function Signup() {
               value={form.passwordConfirmation}
               onChange={handleChange}
               onBlur={(e) => {
-                console.log("ON BLUR");
                 const password = document.getElementById("password") as HTMLInputElement;
                 if (password.value !== e.target.value) {
-                  console.log("MISMATCH!");
                   setPasswordConfirmation(false);
                 } else {
-                  console.log("MATCH!");
                   setPasswordConfirmation(true);
                 }
               }}
@@ -129,6 +122,7 @@ export function Signup() {
 
           <button
             type="submit"
+            disabled={isPending || !passwordConfirmation}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
             Sign Up

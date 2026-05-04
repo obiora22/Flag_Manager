@@ -2,6 +2,7 @@
 import { hashGenerator } from "@api/lib/hashCompare.ts";
 import { Role } from "@db/prisma/generated/enums.ts";
 import { narrowError } from "@repo/utils/narrowError.ts";
+import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
 import { AccountInputSchema } from "@schema/account.schema.ts";
 import { FastifyInstance } from "fastify";
 
@@ -34,8 +35,6 @@ export async function accountRegistrationRoutes(fastify: FastifyInstance) {
           },
         });
 
-        console.log({ user });
-
         await tx.membership.create({
           data: {
             userId: user.id,
@@ -49,18 +48,9 @@ export async function accountRegistrationRoutes(fastify: FastifyInstance) {
           userId: user.id,
         };
       });
-      return {
-        ok: true,
-        data: result,
-        error: null,
-      };
+      return handleResult(result);
     } catch (error) {
-      console.error("Registration failed.", error);
-      return {
-        ok: false,
-        data: null,
-        error: narrowError(error),
-      };
+      handleError(error);
     }
   });
 }
