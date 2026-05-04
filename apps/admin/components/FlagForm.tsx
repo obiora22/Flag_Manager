@@ -21,17 +21,26 @@ type JSONType = string | number | boolean | null | { [key: string]: JSONType } |
 
 export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Props) {
   const isEditMode = flag !== undefined;
-  const { key, description, returnValueType, defaultValue } = flag || {};
+  const { key, description, returnValueType, defaultValue } = flag || {
+    projectId,
+    key: "",
+    description: "",
+    returnValueType: "BOOLEAN" as ReturnValueTye,
+    defaultValue: false as JSONType,
+    archived: false,
+    enabled: false,
+    rules: [],
+  };
   const stableInitialData = useMemo(() => {
     return {
-      key: key || "",
+      key: key,
       projectId,
       rules: [],
-      description: description || "",
+      description: description,
       archived: false,
       enabled: false,
-      returnValueType: returnValueType || ("BOOLEAN" as ReturnValueTye),
-      defaultValue: (defaultValue as JSONType) || false,
+      returnValueType: returnValueType,
+      defaultValue: defaultValue as JSONType,
     };
   }, [defaultValue, key, projectId, description, returnValueType]);
 
