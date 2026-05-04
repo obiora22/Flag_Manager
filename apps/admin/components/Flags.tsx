@@ -401,6 +401,8 @@ function FlagCard({
         return "bg-green-500/10 text-green-400 border-green-500/30";
       case "JSON":
         return "bg-orange-500/10 text-orange-400 border-orange-500/30";
+      default:
+        return "bg-slate-500/10 text-slate-400 border-slate-500/30";
     }
   };
 
