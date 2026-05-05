@@ -36,7 +36,7 @@ const userInclude = {
   },
 } satisfies UserInclude;
 
-type FlagWithEnvironment = FlagGetPayload<{
+export type FlagWithEnvironment = FlagGetPayload<{
   include: typeof flagInclude;
 }>;
 

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import type { ProjectData } from "@api/lib/contracts";
+import type { BasicFlag, FlagWithEnvironment, ProjectData } from "@api/lib/contracts";
 
 interface Props {
   filteredProjects: ProjectData[];
@@ -32,6 +32,7 @@ export function ProjectsGridLayout({
   setSelectedProject,
   openProjectForm,
 }: Props) {
+  const flags = filteredProjects[0]?.flags;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredProjects.map((project) => (
@@ -122,7 +123,7 @@ export function ProjectsGridLayout({
               <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50">
                 <Activity className="w-4 h-4 text-green-400 mb-1" />
                 <p className="text-lg font-semibold text-white">
-                  {project.flags.map((f) => !f.archived).length}
+                  {project.flags.map((f: FlagWithEnvironment) => !f.archived).length}
                 </p>
                 <p className="text-xs text-slate-500">Active</p>
               </div>
