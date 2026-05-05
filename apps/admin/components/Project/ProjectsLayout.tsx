@@ -190,7 +190,7 @@ export function ProjectsListLayout({
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-400">
-                    {project.flags.map((flag) => !flag.archived).length}
+                    {project.flags.map((flag: FlagWithEnvironment) => !flag.archived).length}
                   </p>
                   <p className="text-xs text-slate-500">Active</p>
                 </div>
