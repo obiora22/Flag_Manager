@@ -2,13 +2,15 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
   "type": "module",
   "scripts": {
-    "dev": "tsx --env-file=./.env.development src/server.ts"
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsx --env-file=./.env.development src/server.ts",
+    "start": "node ./dist/apps/api/src/server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^11.1.0",
     "@fastify/helmet": "^13.0.2",
