@@ -21,7 +21,7 @@ interface Props {
   dashboardData: DashboardData;
   session: Session;
 }
-export function Dashboard({ dashboardData, session  }: Props) {
+export function Dashboard({ dashboardData, session }: Props) {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   const { totalFlags, totalMembership, totalProjects } = dashboardData;
@@ -93,13 +93,11 @@ export function Dashboard({ dashboardData, session  }: Props) {
                 <p className="text-sm text-slate-400">Production Organization</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              {user && (
-                <div className="w-30 p-2 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  <p>{user.firstname[0].toUpperCase() + ". " + user.lastname}</p>
-                </div>
-              )}
-            </div>
+            {user && (
+              <div className="w-30 p-2 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
+                <p>{user.firstname?.[0]?.toUpperCase() + ". " + user.lastname}</p>
+              </div>
+            )}
             <button onClick={() => signOut()}>Sign out</button>
           </div>
         </div>

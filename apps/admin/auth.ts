@@ -91,8 +91,11 @@ const nextAuth = NextAuth({
       if (user) {
         token.user = user;
 
-        token.activeOrgId = user.memberships[0].orgId;
-        token.activeRole = user.memberships[0].role;
+        const firstMembership = user.memberships[0];
+        if (firstMembership) {
+          token.activeOrgId = firstMembership.orgId;
+          token.activeRole = firstMembership.role;
+        }
         token.membership = user.memberships;
       }
 

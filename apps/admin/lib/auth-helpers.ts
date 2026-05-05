@@ -2,6 +2,8 @@ import { auth, ExtendedUser } from "@admin/auth";
 import { Session } from "next-auth";
 import { redirect } from "next/navigation";
 
+type Role = "ADMIN" | "EDITOR" | "VIEWER";
+
 /**
  * Require authentication - redirects to login if no session
  * Use this in protected Server Components
@@ -35,15 +37,13 @@ export async function getSessionOrNull(): Promise<Session | null> {
  * @returns Session
  */
 
-export async function requireRole(
-  minRole: "ADMIN" | "EDITOR" | "VIEWER"
-): Promise<Session> {
+export async function requireRole(minRole: Role): Promise<Session> {
   const session = await checkUserSession();
 
-  const roleHierarchy: Record<string, number> = {
+  const roleHierarchy: Record<Role, number> = {
     ADMIN: 3,
-    EDIT: 2,
-    VIEW: 1,
+    EDITOR: 2,
+    VIEWER: 1,
   };
 
   if (roleHierarchy[session.activeRole] < roleHierarchy[minRole]) {
@@ -69,11 +69,11 @@ export async function getUser(): Promise<ExtendedUser> {
  * Useful for conditional rendering
  */
 
-export async function hasRole(role: "ADMIN" | "EDIT" | "VIEW") {
-  const roleHierarchy: Record<string, number> = {
+export async function hasRole(role: Role) {
+  const roleHierarchy: Record<Role, number> = {
     ADMIN: 3,
-    EDIT: 2,
-    VIEW: 1,
+    EDITOR: 2,
+    VIEWER: 1,
   };
   const session = await auth();
 

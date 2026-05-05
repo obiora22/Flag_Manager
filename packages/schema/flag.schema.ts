@@ -11,7 +11,7 @@ const EnvironmentSchema = z.object({
 
 export const baseFlagSchema = z.object({
   key: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   rules: rulesSchema,
   returnValueType: z.enum(ReturnValueType),
   defaultValue: z.json(),

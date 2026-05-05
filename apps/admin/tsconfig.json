@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": ["../../tsconfig.base.json", "@glasshouse/style-guide/typescript"],
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -14,11 +14,20 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "*": ["."],
+      "@admin/*": ["./*"],
+      "@schema/*": ["../../packages/schema/*"],
+      "@repo/*": ["../../*"],
+      "@api/*": ["../api/*"],
+      "@db/*": ["../../packages/db/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

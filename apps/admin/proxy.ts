@@ -31,7 +31,7 @@ export const proxy: AppRouteHandlerFn = auth(async (request: NextRequest) => {
     loginUrl.searchParams.set("from", pathname);
 
     searchParams.forEach(([key, value]) => {
-      if (key !== "from") {
+      if (key && key !== "from" && value) {
         loginUrl.searchParams.set(key, value);
       }
     });

@@ -36,7 +36,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
       key: key,
       projectId,
       rules: [],
-      description: description,
+      description: description || "",
       archived: false,
       enabled: false,
       returnValueType: returnValueType,
