@@ -1,29 +1,28 @@
 {
   "name": "flag_manager",
   "version": "1.0.0",
-  "private": true,
-  "description": "Feature-flag management system and SDK.",
-  "license": "ISC",
-  "author": "O. Anaedozie",
   "type": "module",
+  "description": "Feature-flag management system and SDK.",
+  "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "build": "npm -ws run build",
-    "build:admin": "npm --workspace apps/admin run build",
-    "build:api": "npm --workspace apps/api run build",
-    "dev": "concurrently \"npm run dev:api\" \"npm run dev:admin\"",
-    "dev:admin": "npm --workspace apps/admin run dev",
-    "dev:api": "npm --workspace apps/api run dev",
     "postinstall": "npx prisma generate --schema='./packages/db/schema.prisma'",
-    "prisma:db:push": "npm --workspace packages/db run push",
-    "prisma:db:seed": "npm --workspace packages/db run seed",
+    "dev:api": "npm --workspace apps/api run dev",
+    "dev:admin": "npm --workspace apps/admin run dev",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:admin\"",
+    "build": "npm -ws run build",
+    "build:api": "npm --workspace apps/api run build",
+    "build:admin": "npm --workspace apps/admin run build",
     "prisma:generate": "npm --workspace packages/db run generate",
     "prisma:migrate": "npm --workspace packages/db run migrate",
-    "start:api": "npm --workspace apps/api run start"
+    "prisma:db:push": "npm --workspace packages/db run push",
+    "prisma:db:seed": "npm --workspace packages/db run seed"
   },
+  "author": "O. Anaedozie",
+  "license": "ISC",
   "dependencies": {
     "tslib": "^2.3.0"
   },
