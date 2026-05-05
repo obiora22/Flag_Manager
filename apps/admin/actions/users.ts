@@ -1,11 +1,9 @@
 "use server";
 
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import { narrowError } from "@repo/utils/narrowError";
 import { BaseUser } from "@schema/user.schema";
 import type { UserIncludeCredentials } from "@api/lib/contracts";
 import { APIResult } from "@repo/utils/serviceReturn";
-import { FetchResponse } from "@admin/lib/clientFetch";
 
 export async function getUserCredentials(email: string): Promise<UserIncludeCredentials | null> {
   const result = await apiFetchClient<APIResult<UserIncludeCredentials>>(
