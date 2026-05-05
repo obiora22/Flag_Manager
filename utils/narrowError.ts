@@ -1,4 +1,4 @@
-import { Prisma } from "@db/prisma/generated/client.ts";
+import { Prisma } from "../packages/db/prisma/generated/client";
 
 export const narrowError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
