@@ -18,4 +18,5 @@ out
 
 .idea/
 .vercel
-.env*.local
+.env*
+/dist
