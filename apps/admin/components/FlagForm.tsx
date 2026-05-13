@@ -1,10 +1,10 @@
 import React, { SetStateAction, useMemo, useState, useTransition } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { BaseFlag } from "@schema/flag.schema.ts";
+import { BaseFlag } from "@schema/src/models//flag.schema";
 import { isEqual } from "lodash";
-import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
+import type { BasicFlag, CompositeFlag } from "@db/contracts";
 import { clientSideFetch } from "@admin/lib/clientFetch";
-import { APIResult } from "@repo/utils/serviceReturn";
+import { APIResult } from "@db/lib/serviceReturn";
 
 interface Props {
   flag?: CompositeFlag;

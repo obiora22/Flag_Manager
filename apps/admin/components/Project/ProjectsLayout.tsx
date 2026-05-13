@@ -1,3 +1,4 @@
+import type { FlagWithEnvironment, ProjectData } from "@packages/db/contracts";
 import {
   Activity,
   Archive,
@@ -14,7 +15,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import type { BasicFlag, FlagWithEnvironment, ProjectData } from "@api/lib/contracts";
 
 interface Props {
   filteredProjects: ProjectData[];
@@ -32,7 +32,6 @@ export function ProjectsGridLayout({
   setSelectedProject,
   openProjectForm,
 }: Props) {
-  const flags = filteredProjects[0]?.flags;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredProjects.map((project) => (
@@ -40,9 +39,6 @@ export function ProjectsGridLayout({
           key={project.id}
           className="group bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-slate-600/50 transition-all hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1"
         >
-          {/* Project Header with Gradient */}
-          <div className={`h-2 bg-linear-to-r`} />
-
           <div className="p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">

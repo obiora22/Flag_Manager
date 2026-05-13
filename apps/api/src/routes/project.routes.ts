@@ -1,3 +1,10 @@
+import { ProjectServices } from "@api/src/services/projectServices.js";
+import {
+  BaseProject,
+  baseProjectSchema,
+  UpdateProject,
+  updateProjectSchema,
+} from "@packages/schema";
 import {
   FastifyInstance,
   FastifyPluginOptions,
@@ -5,13 +12,6 @@ import {
   FastifyRequest,
   HookHandlerDoneFunction,
 } from "fastify";
-import { ProjectServices } from "@api/src/services/projectServices.ts";
-import {
-  BaseProject,
-  baseProjectSchema,
-  UpdateProject,
-  updateProjectSchema,
-} from "@schema/project.schema.js";
 import z from "zod";
 
 export async function projectRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {

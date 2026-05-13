@@ -24,10 +24,10 @@ import { FlagForm } from "@admin/components/FlagForm.tsx";
 import Modal from "@admin/components/Modal.tsx";
 import { FetchResponse, clientSideFetch } from "@admin/lib/clientFetch.ts";
 import useSWR from "swr";
-import { APIResult } from "@repo/utils/serviceReturn";
+import { APIResult } from "@db/lib/serviceReturn";
 import { ErrorState } from "./ErrorState";
 import { Flag } from "@db/prisma/generated/client";
-import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
+import type { BasicFlag, CompositeFlag } from "@db/contracts";
 
 interface FlagsListProps {
   projectId: string;

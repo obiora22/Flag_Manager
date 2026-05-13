@@ -1,7 +1,7 @@
 import { FetchResponse } from "@admin/lib/clientFetch";
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import { APIResult } from "@repo/utils/serviceReturn";
-import { BaseFlag, UpdateFlag } from "@schema/flag.schema";
+import { APIResult } from "@packages/db/sharedTypes";
+import { BaseFlag, UpdateFlag } from "@packages/schema";
 
 export async function getFlags(path: string): Promise<FetchResponse<APIResult<BaseFlag[]>>> {
   return await apiFetchClient<APIResult<BaseFlag[]>>(path);

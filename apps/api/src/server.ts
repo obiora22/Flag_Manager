@@ -1,18 +1,16 @@
-import Fastify from "fastify";
+import authPlugin from "@api/src/plugins/auth.js";
+import prismaPlugin from "@api/src/plugins/prisma.js";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
-import { userRoutes } from "./routes/user.routes.ts";
-import { projectRoutes } from "./routes/project.routes.ts";
-import { flagRoutes } from "./routes/flag.routes.ts";
-import { environmentRoutes } from "./routes/environment.routes.ts";
-
-import prismaPlugin from "@api/src/plugins/prisma.ts";
-import authPlugin from "@api/src/plugins/auth.ts";
-
-import { PrismaClient } from "@db/prisma/generated/client.ts";
-import { healthCheckRoute } from "./routes/healthCheck.routes.ts";
-import { accountRegistrationRoutes } from "./routes/account.routes.ts";
-import dashboardRoutes from "./routes/dashboard.routes.ts";
+import { PrismaClient } from "@packages/db/prisma/server";
+import Fastify from "fastify";
+import { accountRegistrationRoutes } from "./routes/account.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import { environmentRoutes } from "./routes/environment.routes.js";
+import { flagRoutes } from "./routes/flag.routes.js";
+import { healthCheckRoute } from "./routes/healthCheck.routes.js";
+import { projectRoutes } from "./routes/project.routes.js";
+import { userRoutes } from "./routes/user.routes.js";
 
 declare module "fastify" {
   interface FastifyInstance {

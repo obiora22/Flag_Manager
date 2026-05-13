@@ -1,13 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["**/*.ts", "*.ts"],
+  "include": ["src"],
   "compilerOptions": {
     "declaration": true /* Generates corresponding '.d.ts' file */,
     "declarationMap": true /* Optional: allows VS Code to jump to source */,
     "emitDeclarationOnly": false /* Set to true if you only want types, not JS */,
     "outDir": "./dist",
+    "rootDir": "src",
     "module": "nodenext",
+
     "moduleResolution": "nodenext",
-    "rootDir": "../.."
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["./*"]
+    }
   }
 }

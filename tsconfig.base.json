@@ -1,27 +1,15 @@
 {
   "compilerOptions": {
-    "typeRoots": ["node_modules/@types", "./types/fastify"],
+    "typeRoots": ["node_modules/@types"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "strict": true,
-    // "module": "esnext",
-    // "target": "es2022",
-    // "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "allowJs": false,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "emitDeclarationOnly": false,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
-    "paths": {
-      "*": ["."],
-      "@admin/*": ["./apps/admin/*"],
-      "@api/*": ["./apps/api/*"],
-      "@db/*": ["./packages/db/*"],
-      "@schema/*": ["./packages/schema/*"],
-      "@repo/*": ["./*"]
-    }
+    "sourceMap": true
   },
-  "include": ["./**/*.ts", "./types/**/*.ts"],
   "exclude": ["node_modules"]
 }

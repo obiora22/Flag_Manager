@@ -1,6 +1,6 @@
 import NextAuth, { type DefaultSession, Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compareHash } from "@admin/lib/hashAndCompare.ts";
+import { compareHash } from "./lib/hashAndCompare";
 import { getUserCredentials } from "./actions/users";
 import { Role } from "@db/prisma/generated/client";
 

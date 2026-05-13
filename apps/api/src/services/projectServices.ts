@@ -1,23 +1,6 @@
-import { PrismaClient } from "@db/prisma/generated/client.ts";
-import { ProjectGetPayload, ProjectInclude } from "@db/prisma/generated/models.ts";
-import { handleResult, handleError } from "@repo/utils/serviceReturn.ts";
-import { BaseProject, UpdateProject } from "@schema/project.schema.ts";
-
-const projectInclude = {
-  users: true,
-  flags: {
-    include: {
-      environments: true,
-    },
-  },
-} satisfies ProjectInclude;
-
-export type ProjectData = ProjectGetPayload<{
-  include: typeof projectInclude;
-}> & {
-  userCount: number;
-  flagCount: number;
-};
+import { PrismaClient } from "@packages/db/prisma/server";
+import { handleError, handleResult } from "@packages/db/utils";
+import { BaseProject, UpdateProject } from "@packages/schema";
 
 export class ProjectServices {
   static async getProjects(dbClientInstance: PrismaClient, orgId: string) {
@@ -26,7 +9,14 @@ export class ProjectServices {
         where: {
           organizationId: orgId,
         },
-        include: projectInclude,
+        include: {
+          users: true,
+          flags: {
+            include: {
+              environments: true,
+            },
+          },
+        },
       });
       const transformData = projects.map((project) => {
         const userCount = project.users.length;

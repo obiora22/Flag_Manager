@@ -1,18 +1,18 @@
+import { EnvironmentServices } from "@api/src/services/environmentServices.js";
+import { handleResult } from "@packages/db/utils";
+import {
+  BaseEnvironment,
+  baseEnvironmentSchema,
+  UpdateEnvironment,
+  updateEnvironmentSchema,
+} from "@packages/schema";
 import fastify, {
   FastifyInstance,
   FastifyPluginOptions,
   FastifyReply,
   FastifyRequest,
 } from "fastify";
-import { EnvironmentServices } from "@api/src/services/environmentServices.ts";
-import {
-  BaseEnvironment,
-  baseEnvironmentSchema,
-  UpdateEnvironment,
-  updateEnvironmentSchema,
-} from "@schema/environment.schema.js";
 import z from "zod";
-import { handleResult } from "@repo/utils/serviceReturn.ts";
 
 interface RequestProps {
   Params: { id: string };
@@ -21,81 +21,77 @@ interface RequestProps {
 export async function environmentRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
   fastify.get("/environments", {
     async handler(request: FastifyRequest, reply: FastifyReply) {
-      const { ok, data, error } = await EnvironmentServices.findAll(fastify.prisma);
-      return reply.send({ ok, data, error });
+      const result = await EnvironmentServices.findAll(fastify.prisma);
+      return reply.send(handleResult(result));
     },
   });
   fastify.get("/environment/:id", {
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const { ok, data, error } = await EnvironmentServices.findUnique(
-        fastify.prisma,
-        request.params.id
-      );
-      return reply.send({ ok, data, error });
+      const result = await EnvironmentServices.findUnique(fastify.prisma, request.params.id);
+      return reply.send(handleResult(result));
     },
   });
   fastify.post("/environment", {
     async preHandler(
       request: FastifyRequest<RequestProps & { Body: BaseEnvironment }>,
       reply: FastifyReply,
-      done
+      done,
     ) {
       const { data, error } = baseEnvironmentSchema.safeParse(request.body);
-
       if (error) {
-        return reply.status(400).send({
-          ok: false,
-          data: null,
-          error: {
-            message: "Invalid paramters",
-            details: z.flattenError(error),
-          },
-        });
+        return reply.status(400).send(handleResult(z.flattenError(error)));
       }
+      // if (error) {
+      //   return reply.status(400).send({
+      //     ok: false,
+      //     data: null,
+      //     error: {
+      //       message: "Invalid paramters",
+      //       details: z.flattenError(error),
+      //     },
+      //   });
+      // }
       request.baseEnvironment = data;
       done();
     },
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const { ok, data, error } = await EnvironmentServices.create(
-        fastify.prisma,
-        request.baseEnvironment
-      );
-      return reply.send({ ok, data, error });
+      const result = await EnvironmentServices.create(fastify.prisma, request.baseEnvironment);
+      return reply.send(handleResult(result));
     },
   });
-  fastify.put("/environment/:id", {
+  fastify.patch("/environment/:id", {
     async preHandler(
       request: FastifyRequest<RequestProps & { body: UpdateEnvironment }>,
       reply: FastifyReply,
-      done
+      done,
     ) {
       const { data, error } = updateEnvironmentSchema.safeParse(request.body);
-
       if (error) {
-        return reply.status(400).send({
-          ok: false,
-          data: null,
-          error: {
-            message: "Invalid paramters",
-            details: z.flattenError(error),
-          },
-        });
+        return reply.status(400).send(handleResult(z.flattenError(error)));
       }
+      // if (error) {
+      //   return reply.status(400).send({
+      //     ok: false,
+      //     data: null,
+      //     error: {
+      //       message: "Invalid paramters",
+      //       details: z.flattenError(error),
+      //     },
+      //   });
+      // }
       request.updateEnvironment = data;
       done();
     },
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const { ok, data, error } = await EnvironmentServices.create(
-        fastify.prisma,
-        request.baseEnvironment
-      );
-      return reply.send({ ok, data, error });
+      const result = await EnvironmentServices.create(fastify.prisma, request.baseEnvironment);
+      return reply.send(handleResult(result));
     },
   });
 
   fastify.delete("/environments/:id", {
     async handler(request: FastifyRequest<RequestProps>, reply: FastifyReply) {
-      const response = await EnvironmentServices.delete(fastify.prisma, request.params.id);
+      const result = await EnvironmentServices.delete(fastify.prisma, request.params.id);
+      return reply.send(handleResult(result));
     },
   });
 }

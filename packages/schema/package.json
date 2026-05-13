@@ -1,18 +1,15 @@
 {
   "name": "@packages/schema",
   "version": "1.0.0",
-  "description": "zod schema",
-  "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
-    }
-  },
-  "author": "Obiora Anaedozie",
+  "description": "zod schema package",
   "license": "ISC",
+  "author": "Obiora Anaedozie",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "lodash": "^4.18.1",
     "zod": "^4.3.5"

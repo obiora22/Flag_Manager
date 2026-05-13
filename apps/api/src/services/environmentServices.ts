@@ -1,6 +1,10 @@
-import { PrismaClient } from "@db/prisma/generated/client";
-import { handleError, handleResult } from "@repo/utils/serviceReturn";
-import { BaseEnvironment, UpdateEnvironment } from "@schema/environment.schema";
+import { Prisma, PrismaClient } from "@packages/db/prisma/server";
+import { handleError, handleResult } from "@packages/db/utils";
+import {
+  baseEnvironmentSchema,
+  type BaseEnvironment,
+  type UpdateEnvironment,
+} from "@packages/schema";
 
 export class EnvironmentServices {
   static async findAll(dbClientInstance: PrismaClient) {
@@ -22,9 +26,16 @@ export class EnvironmentServices {
     }
   }
   static async create(dbClientInstance: PrismaClient, data: BaseEnvironment) {
+    const { data: d, error } = baseEnvironmentSchema.safeParse(data);
+    if (error) {
+      return handleError(error);
+    }
     try {
       const response = await dbClientInstance.flagEnvironment.create({
-        data,
+        data: {
+          ...d,
+          overrides: d.overrides as Prisma.InputJsonValue,
+        },
       });
 
       return handleResult(response);

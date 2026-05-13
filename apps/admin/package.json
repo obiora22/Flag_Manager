@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "next dev",
+    "lint": "eslint",
+    "start": "next start"
   },
   "dependencies": {
     "bcrypt-ts": "^8.0.0",
@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@glasshouse/style-guide": "^1.1.2",
+    "@packages/db": "*",
+    "@packages/schema": "*",
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",

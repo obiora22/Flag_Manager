@@ -1,32 +1,33 @@
 {
   "name": "flag_manager",
   "version": "1.0.0",
-  "type": "module",
-  "description": "Feature-flag management system and SDK.",
   "private": true,
+  "description": "Feature-flag management system and SDK.",
+  "license": "ISC",
+  "author": "O. Anaedozie",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "npx prisma generate --schema='./packages/db/schema.prisma'",
-    "dev:api": "npm --workspace apps/api run dev",
-    "dev:admin": "npm --workspace apps/admin run dev",
+    "build": "tsc -b",
+    "build:admin": "npm run build --workspace=apps/admin",
+    "build:api": "npm run build --workspace=apps/api",
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:admin\"",
-    "build": "npm -ws run build",
-    "build:api": "npm --workspace apps/api run build",
-    "build:admin": "npm --workspace apps/admin run build",
-    "prisma:generate": "npm --workspace packages/db run generate",
-    "prisma:migrate": "npm --workspace packages/db run migrate",
+    "dev:admin": "npm --workspace apps/admin run dev",
+    "dev:api": "npm --workspace apps/api run dev",
+    "postinstall": "npx prisma generate --schema='./packages/db/schema.prisma'",
     "prisma:db:push": "npm --workspace packages/db run push",
-    "prisma:db:seed": "npm --workspace packages/db run seed"
+    "prisma:db:seed": "npm --workspace packages/db run seed",
+    "prisma:generate": "npm --workspace packages/db run generate",
+    "prisma:migrate": "npm --workspace packages/db run migrate"
   },
-  "author": "O. Anaedozie",
-  "license": "ISC",
   "dependencies": {
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.10.1",
     "eslint": "^9.8.0",

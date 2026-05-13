@@ -1,17 +1,12 @@
-// apps/api/src/routes/bootstrap.ts
-import { hashGenerator } from "@api/lib/hashCompare.ts";
-import { Role } from "@db/prisma/generated/enums.ts";
-import { narrowError } from "@repo/utils/narrowError.ts";
-import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
-import { AccountInputSchema } from "@schema/account.schema.ts";
+import { Role } from "@packages/db/prisma/server";
+import { handleError, handleResult } from "@packages/db/utils";
+import { AccountInputSchema } from "@packages/schema";
 import { FastifyInstance } from "fastify";
+import { hashGenerator } from "../lib/hashCompare.js";
 
 export async function accountRegistrationRoutes(fastify: FastifyInstance) {
   fastify.post("/accounts", async (req, reply) => {
     const input = AccountInputSchema.parse(req.body);
-
-    console.log({ input });
-
     try {
       const result = await fastify.prisma.$transaction(async (tx) => {
         const org = await tx.organization.create({
@@ -23,8 +18,8 @@ export async function accountRegistrationRoutes(fastify: FastifyInstance) {
         const user = await tx.user.create({
           data: {
             email: input.email,
-            firstname: input.firstName,
-            lastname: input.lastName,
+            firstname: input.firstname,
+            lastname: input.lastname,
           },
         });
 

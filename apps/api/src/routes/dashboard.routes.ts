@@ -1,7 +1,5 @@
-import { Organization } from "@db/prisma/generated/client.ts";
-import { OrganizationInclude, OrganizationGetPayload } from "@db/prisma/generated/models.ts";
-import { narrowError } from "@repo/utils/narrowError.ts";
-import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
+import { OrganizationGetPayload, OrganizationInclude } from "@packages/db/models";
+import { handleError, handleResult } from "@packages/db/utils";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 const orgInclude = {
@@ -13,15 +11,7 @@ const orgInclude = {
   memberships: true,
 } satisfies OrganizationInclude;
 
-type OrgInclude = OrganizationGetPayload<{ include: typeof orgInclude }>;
-
-export interface DashboardData {
-  id: string;
-  name: string;
-  totalFlags: string;
-  totalProjects: string;
-  totalMembership: string;
-}
+type OrgData = OrganizationGetPayload<{ include: typeof orgInclude }>;
 
 export default async function dashboardRoutes(fastify: FastifyInstance) {
   fastify.get("/dashboard", async (request: FastifyRequest, reply: FastifyReply) => {

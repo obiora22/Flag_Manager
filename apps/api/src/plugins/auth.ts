@@ -1,4 +1,4 @@
-import { Membership } from "@db/prisma/generated/client.ts";
+import { Membership } from "@packages/db/prisma/server";
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import jwt from "jsonwebtoken";
@@ -46,9 +46,7 @@ declare module "fastify" {
 const AUTH_SECRET = process.env.AUTH_SECRET;
 
 if (!AUTH_SECRET) {
-  console.error(
-    "❌ FATAL ERROR: API_JWT_SECRET environment variable is not set"
-  );
+  console.error("❌ FATAL ERROR: API_JWT_SECRET environment variable is not set");
   console.error("Please set API_JWT_SECRET in your .env file");
   process.exit(1);
 }

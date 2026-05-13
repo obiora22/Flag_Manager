@@ -1,10 +1,9 @@
-import { EmptyState } from "@admin/components/EmptyState";
 import { ErrorState } from "@admin/components/ErrorState";
 import { ProjectList } from "@admin/components/Project/ProjectList.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import type { ProjectData } from "@api/lib/contracts";
-import { APIResult } from "@repo/utils/serviceReturn";
+import type { ProjectData } from "@db/contracts";
+import { APIResult } from "@db/lib/serviceReturn";
 
 export default async function ProjectPage() {
   const session = await checkUserSession();

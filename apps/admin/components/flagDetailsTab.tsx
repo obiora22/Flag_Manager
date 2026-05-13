@@ -1,42 +1,41 @@
-import React, { SetStateAction, useState } from "react";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  GitBranch,
-  Zap,
-  Users,
-  CheckCircle2,
-  XCircle,
-  TrendingUp,
-  BarChart3,
-  Archive,
-  Copy,
-  Loader2,
-  AlertTriangle,
-  Activity,
-} from "lucide-react";
-import { FlagEnvironment } from "@db/prisma/generated/client.ts";
-import { Rule } from "@db/types/rules.ts";
 import Modal from "@admin/components/Modal.tsx";
 import RuleBuilderForm from "@admin/components/RuleFormBuilder.tsx";
 import { clientSideFetch } from "@admin/lib/clientFetch";
 import { useTransitionWrapper } from "@admin/lib/useTransitionWrapper.tsx";
-import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
-import { APIResult } from "@repo/utils/serviceReturn";
-import { rulesSchema } from "@schema/rule.schema";
+import { Flag, FlagEnvironment } from "@packages/db/prisma/browser";
+import { APIResult, Rule } from "@packages/db/sharedTypes";
+import type { FlagData } from "@packages/db/sharedTypes";
+import { rulesSchema } from "@packages/schema";
+import {
+  Activity,
+  AlertTriangle,
+  Archive,
+  BarChart3,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Edit,
+  GitBranch,
+  Loader2,
+  Plus,
+  Trash2,
+  TrendingUp,
+  Users,
+  XCircle,
+  Zap,
+} from "lucide-react";
+import React, { SetStateAction, useState } from "react";
 
 interface RulesTabProps {
-  flag: CompositeFlag;
-  setFlag: React.Dispatch<SetStateAction<CompositeFlag>>;
+  flag: FlagData;
+  setFlag: React.Dispatch<SetStateAction<FlagData>>;
   projectId: string;
   expandedRules: Set<string>;
   onToggleRule: (ruleId: string) => void;
 }
 
-function isEnabled(flag: CompositeFlag) {
+function isEnabled(flag: FlagData) {
   return flag.rules.length > 0 && flag.defaultValue === false;
 }
 
@@ -50,7 +49,7 @@ export function RulesTab({ flag, setFlag, expandedRules, onToggleRule }: RulesTa
   const handleRuleDelete = (targetIndex: number) =>
     start(async () => {
       setSubmissionError(null);
-      const result = await clientSideFetch<APIResult<BasicFlag>>(`/flags/${flag.id}`, {
+      const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flag.id}`, {
         method: "PATCH",
         body: JSON.stringify({
           rules: rules.filter((r, index) => index !== targetIndex),
@@ -326,7 +325,7 @@ function RuleCard({
 // ============================================
 
 interface EnvironmentsTabProps {
-  flag: CompositeFlag;
+  flag: FlagData;
   projectId: string;
   environments: FlagEnvironment[];
 }
@@ -350,7 +349,7 @@ export function EnvironmentsTab({ flag, environments }: EnvironmentsTabProps) {
 
 interface EnvironmentCardProps {
   environment: FlagEnvironment;
-  flag: CompositeFlag;
+  flag: FlagData;
 }
 
 function EnvironmentCard({ environment }: EnvironmentCardProps) {
@@ -412,7 +411,7 @@ function EnvironmentCard({ environment }: EnvironmentCardProps) {
 // ============================================
 
 interface AnalyticsTabProps {
-  flag: CompositeFlag;
+  flag: FlagData;
   projectId: string;
 }
 
@@ -546,11 +545,11 @@ function MetricCard({ label, value, change, trend, icon: Icon }: MetricCardProps
 // ============================================
 
 interface SettingsTabProps {
-  flag: CompositeFlag;
+  flag: FlagData;
   projectId: string;
   onEdit: () => void;
   onDuplicate: () => void;
-  onArchive: (flag: CompositeFlag) => void;
+  onArchive: (flag: FlagData) => void;
   onDelete: (flagId: string) => void;
   actionInProgress: string | null;
   isPending: boolean;

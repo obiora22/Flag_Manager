@@ -1,38 +1,34 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import {
-  Flag as FlagIcon,
-  Edit,
-  Copy,
-  ToggleLeft,
-  ToggleRight,
-  Settings,
-  GitBranch,
-  Globe,
-  Code,
-  FileCode,
-  Loader2,
-} from "lucide-react";
-
-import { usePathname, useRouter } from "next/navigation";
+import { Banner } from "@admin/components/Banner";
 import {
   AnalyticsTab,
   EnvironmentsTab,
   RulesTab,
   SettingsTab,
-} from "@admin/components/flagDetailsTab.tsx";
-
-import { JsonValue } from "@db/prisma/generated/internal/prismaNamespace.ts";
+} from "@admin/components/flagDetailsTab";
 import { FlagForm } from "@admin/components/FlagForm.tsx";
 import Modal from "@admin/components/Modal.tsx";
 import { clientSideFetch } from "@admin/lib/clientFetch";
-import { ApiResult } from "@api/lib/types";
-import { Banner } from "./Banner";
 import { trimLastSegment } from "@admin/lib/trimLastSegment";
+import type { APIResult, CompositeFlag } from "@packages/db/contracts";
+import { Flag, FlagEnvironment, Prisma } from "@packages/db/prisma/browser";
+import {
+  Code,
+  Copy,
+  Edit,
+  FileCode,
+  Flag as FlagIcon,
+  GitBranch,
+  Globe,
+  Loader2,
+  Settings,
+  ToggleLeft,
+  ToggleRight,
+} from "lucide-react";
 import Link from "next/link";
-import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
-import { FlagEnvironment } from "@db/prisma/generated/client";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 interface FlagDetailPageProps {
   flag: CompositeFlag;
@@ -42,7 +38,7 @@ interface FlagDetailPageProps {
 
 type actions = "archive" | "delete" | "copy" | "edit" | "toggle" | null;
 
-const formatValue = (value: JsonValue): string => {
+const formatValue = (value: Prisma.JsonValue): string => {
   if (typeof value === "boolean") return value ? "true" : "false";
   if (typeof value === "object") return JSON.stringify(value, null, 2);
   return String(value);
@@ -69,7 +65,7 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
     setError(null);
     setActionInProgress("archive");
     startTransition(async () => {
-      const result = await clientSideFetch<ApiResult<BasicFlag>>(`/flags/${flag.id}`, {
+      const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flag.id}`, {
         method: "PATCH",
         body: JSON.stringify({ archived: !flag.archived }),
       });
@@ -79,9 +75,10 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
       }
 
       if (result.status === "success") {
-        if (!result.payload.ok) {
+        if (result.payload.status === "error") {
           setError(result.payload.error);
         } else {
+          if (result.payload.status === "not-found") return;
           const { enabled, archived } = result.payload.data;
           setFlag((prev) => ({
             ...prev,
@@ -98,19 +95,22 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
     setActionInProgress("toggle");
     startTransition(async () => {
       try {
-        const result = await clientSideFetch<ApiResult<BasicFlag>>(`/flags/${flag.id}`, {
+        const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flag.id}`, {
           method: "PATCH",
           body: JSON.stringify({
             enabled: !flag.enabled,
           }),
         });
 
-        if (result.status === "api-error") setError(result.error);
-        if (result.status === "network-error") setError(result.error);
+        // if (result.status === "api-error") setError(result.error);
+        // if (result.status === "network-error") setError(result.error);asd
+        if (result.status !== "success") {
+          setError(result.error);
+        }
         if (result.status === "success") {
           if (result.payload.status === "error") {
             setError(result.payload.error);
-          } else {
+          } else if (result.payload.status !== "not-found") {
             const enabled = result.payload.data.enabled;
             setFlag((prev) => ({
               ...prev,
@@ -130,7 +130,7 @@ export function FlagDetails({ flag: initialFlag, projectId }: FlagDetailPageProp
     setError(null);
     startTransition(async () => {
       if (!confirm("Are you sure you want to delete flag? Action is permanent.")) return;
-      const result = await clientSideFetch<ApiResult<BasicFlag>>(`/flags/${flagId}`, {
+      const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flagId}`, {
         method: "DELETE",
       });
       if (result.status === "api-error" || result.status === "network-error")

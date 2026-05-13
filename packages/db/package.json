@@ -2,32 +2,60 @@
   "name": "@packages/db",
   "version": "1.0.0",
   "description": "prisma client module",
+  "license": "ISC",
+  "author": "O. Anaedozie",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
   "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
+    "./sharedTypes": {
+      "types": "./dist/sharedTypes.d.ts",
+      "import": "./dist/sharedTypes.d.ts"
+    },
+    "./utils": {
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/contracts.d.ts",
+      "import": "./dist/contracts.js"
+    },
+    "./rules": {
+      "types": "./dist/rules.d.ts",
+      "import": "./dist/rules.js"
+    },
+    "./models": {
+      "types": "./dist/prisma/generated/models.d.ts",
+      "import": "./dist/prisma/generated/models.js"
+    },
+    "./enums": {
+      "types": "./dist/prisma/generated/enums.d.ts",
+      "import": "./dist/prisma/generated/enums.js"
+    },
+    "./prisma/browser": {
+      "types": "./dist/prisma/generated/browser.d.ts",
+      "import": "./dist/prisma/generated/browser.js"
+    },
+    "./prisma/server": {
+      "types": "./dist/prisma/generated/client.d.ts",
+      "import": "./dist/prisma/generated/client.js"
     }
   },
   "scripts": {
+    "build": "tsc",
     "format": "npx prisma format --schema='./schema.prisma'",
     "generate": "npx prisma generate --schema='./schema.prisma'",
     "push": "npx prisma db push --schema='./schema.prisma'",
     "seed": "npx prisma db seed --schema='./schema.prisma'"
   },
-  "author": "O. Anaedozie",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/pg": "^8.16.0",
-    "prisma": "^7.2.0"
-  },
   "dependencies": {
+    "@packages/schema": "*",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "bcrypt-ts": "^8.0.0",
     "lodash": "^4.18.1",
     "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.2.0"
   }
 }

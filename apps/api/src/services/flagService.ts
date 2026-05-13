@@ -1,19 +1,12 @@
-import { Prisma, PrismaClient, Flag } from "@db/prisma/generated/client.ts";
-import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
-import { BaseFlag, UpdateFlag } from "@schema/flag.schema.ts";
-import { Rule } from "@schema/rule.schema.ts";
-import { FlagGetPayload, FlagInclude } from "@db/prisma/generated/models.ts";
+import { UserModel, FlagModel } from "@packages/db/models";
+import { Prisma, PrismaClient } from "@packages/db/prisma/server";
+import { Flag } from "@packages/db/prisma/server";
+import { BaseFlag, UpdateFlag, Rule } from "@packages/schema";
+import { handleResult, handleError } from "@packages/db/utils";
 
 const flagInclude = {
   environments: true,
-} satisfies FlagInclude;
-
-export type FlagWithEnvironment = FlagGetPayload<{
-  include: typeof flagInclude;
-}>;
-
-export type CompositeFlag = Omit<FlagWithEnvironment, "rules"> & { rules: Rule[] };
-export type BasicFlag = Flag;
+} satisfies Prisma.FlagInclude;
 
 export class FlagService {
   static async getFlags(dbClientInstance: PrismaClient, projectId: string) {

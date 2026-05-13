@@ -2,7 +2,7 @@
 import React, { Suspense, useState } from "react";
 
 import { FolderKanban, Plus } from "lucide-react";
-import type { ProjectData } from "@api/lib/contracts";
+import type { ProjectData } from "@db/contracts";
 import { ProjectsGridLayout, ProjectsListLayout } from "@admin/components/Project/ProjectsLayout";
 import { ViewAndSearch } from "@admin/components/Project/ViewAndSearch.tsx";
 import { ProjectForm } from "@admin/components/ProjectForm.tsx";
@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import { FetchResponse, clientSideFetch } from "@admin/lib/clientFetch.ts";
 import useSWR from "swr";
 import { FlagForm } from "@admin/components/FlagForm.tsx";
-import { APIResult } from "@repo/utils/serviceReturn";
+import { APIResult } from "@db/lib/serviceReturn";
 import { EmptyState } from "../EmptyState";
 import { ErrorState } from "../ErrorState";
 import FullPageLoader from "../FullPageLoader";

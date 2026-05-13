@@ -1,13 +1,14 @@
+import { UserServices } from "@api/src/services/userServices.js";
+import { User } from "@packages/db/prisma/server";
+import { handleError, handleResult } from "@packages/db/utils";
+import { BaseUser, baseUserSchema, UpdateUser, UpdateUserSchema } from "@packages/schema";
 import {
-  FastifyRequest,
-  FastifyReply,
-  FastifyPluginOptions,
   FastifyInstance,
+  FastifyPluginOptions,
+  FastifyReply,
+  FastifyRequest,
   RequestGenericInterface,
 } from "fastify";
-import { User } from "@db/prisma/generated/client.js";
-import { UpdateUserSchema, baseUserSchema, BaseUser, UpdateUser } from "@schema/user.schema.js";
-import { UserServices } from "@api/src/services/userServices.ts";
 import { z } from "zod";
 
 interface RequestParams<T, Q = any> {
@@ -17,15 +18,10 @@ interface RequestParams<T, Q = any> {
   };
 }
 
-interface MyRequest<T> extends RequestGenericInterface {
-  Querystring: T;
-}
-
 export async function userRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
   fastify.get("/users", {
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
       const result = await UserServices.getUsers(fastify.prisma);
-      // fastify.prisma;
       return reply.send(result);
     },
   });
@@ -36,88 +32,62 @@ export async function userRoutes(fastify: FastifyInstance, options: FastifyPlugi
       reply: FastifyReply,
     ) => {
       const { id } = request.params;
-      const { ok, data, error } = await UserServices.getUser(id, fastify.prisma);
+      const result = await UserServices.getUser(id, fastify.prisma);
 
-      return reply.send({
-        ok,
-        data,
-        error,
-      });
+      return reply.send(result);
     },
   });
 
   fastify.get("/users/email", {
-    handler: async (request: FastifyRequest<MyRequest<{ email: string }>>, reply: FastifyReply) => {
+    handler: async (
+      request: FastifyRequest<{ Querystring: { email: string } }>,
+      reply: FastifyReply,
+    ) => {
       const { email } = request.query;
       const decodedEmail = decodeURIComponent(email);
       const result = await UserServices.getUserCredentials(decodedEmail, fastify.prisma);
-
       return reply.send(result);
     },
   });
 
   fastify.post("/users", {
     preHandler: (request: FastifyRequest, reply: FastifyReply, done) => {
-      console.log({ body: request.body });
-      const body = request.body as BaseUser;
-      const { data, error } = BaseUserSchema.safeParse(body);
-      if (error)
-        return reply.send({
-          ok: false,
-          data: null,
-          error: {
-            message: "Invalid parameters",
-            details: z.flattenError(error),
-          },
-        });
-      request.baseUser = body;
+      const body = request.body;
+      const { data, error } = baseUserSchema.safeParse(body);
+      if (error) return reply.status(400).send(handleError(z.flattenError(error)));
+      request.baseUser = data;
       done();
     },
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
       const body = request.baseUser;
-      const { ok, data, error } = await UserServices.createUser(body, fastify.prisma);
-      return reply.send({
-        ok,
-        data,
-        error,
-      });
+      const result = await UserServices.createUser(body, fastify.prisma);
+      return reply.send(result);
     },
   });
 
-  fastify.put("/users/:id", {
-    preHandler: (request: FastifyRequest, reply: FastifyReply) => {
-      const body = request.body as UpdateUser;
+  fastify.patch("/users/:id", {
+    preHandler: (
+      request: FastifyRequest<{ Params: { id: string }; Body: BaseUser }>,
+      reply: FastifyReply,
+      done,
+    ) => {
+      const body = request.body;
       const { data, error } = UpdateUserSchema.safeParse(body);
-      if (error)
-        return reply.send({
-          ok: false,
-          data: null,
-          error: {
-            message: "Invalid paramters",
-            details: z.flattenError(error),
-          },
-        });
-      request.updateUser = body;
+      if (error) return reply.status(400).send(handleError(z.flattenError(error)));
+      request.updateUser = data;
+      done();
     },
-    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+    handler: async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
       const body = request.updateUser;
-      const { ok, data, error } = await UserServices.updateUser(body, fastify.prisma);
-      return reply.send({
-        ok: false,
-        data: null,
-        error: error,
-      });
+      const result = await UserServices.updateUser(body, request.params.id, fastify.prisma);
+      return reply.send(result);
     },
   });
+
   fastify.delete("/users/:id", {
     handler: async (request: FastifyRequest<RequestParams<User>>, reply: FastifyReply) => {
-      const { id } = request.params;
-      const { ok, data, error } = await UserServices.deleteUser(id, fastify.prisma);
-      return reply.send({
-        ok,
-        data,
-        error,
-      });
+      const result = await UserServices.deleteUser(request.params.id, fastify.prisma);
+      return reply.send(result);
     },
   });
 }

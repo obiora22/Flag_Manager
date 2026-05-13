@@ -1,9 +1,9 @@
 import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useMemo, useState, useTransition } from "react";
-import type { ProjectData } from "@api/lib/contracts";
+import type { ProjectData } from "@db/contracts";
 import { isEqual } from "lodash";
 import { clientSideFetch } from "@admin/lib/clientFetch";
-import { APIResult } from "@repo/utils/serviceReturn";
+import { APIResult } from "@db/lib/serviceReturn";
 import { Project } from "@db/prisma/generated/client";
 
 interface Props {

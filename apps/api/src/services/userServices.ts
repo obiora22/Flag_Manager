@@ -1,57 +1,17 @@
-import { User, PrismaClient, Prisma } from "@db/prisma/generated/client.ts";
-import { narrowError } from "@repo/utils/narrowError.ts";
-import { BaseUser, UpdateUser, baseUserSchema } from "@schema/user.schema.ts";
-import { prismaClientInstance as pCI } from "@db/lib/prismaClient.ts";
-import z from "zod";
+import { PrismaClient } from "@packages/db/prisma/server";
+import { handleError, handleResult, narrowError } from "@packages/db/utils";
+import { BaseUser, UpdateUser } from "@packages/schema";
 import { genSalt, hash } from "bcrypt-ts";
-import { UserGetPayload, UserInclude } from "@db/prisma/generated/models.ts";
-import { handleError, handleResult } from "@repo/utils/serviceReturn.ts";
-
-type ServiceResult<T> =
-  | {
-      ok: true;
-      data: T | null;
-      error: null;
-    }
-  | {
-      ok: false;
-      data: null;
-      error: string;
-    };
-
-const userInclude = {
-  credential: true,
-  memberships: {
-    include: {
-      org: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  },
-} satisfies UserInclude;
-
-export type UserIncludeCredentials = UserGetPayload<{ include: typeof userInclude }>;
 
 export const hashGenerator = async (input: string) => {
   const salt = await genSalt();
   return await hash(input, salt);
 };
 
-async function checkDatabase(prismaClientInstance: PrismaClient) {
-  // Call on your existing instance
-  const [db] = await prismaClientInstance.$queryRaw<[{ current_database: string }]>`
-    SELECT current_database()
-  `;
-  console.log("Connected to:", db.current_database);
-}
-
 export class UserServices {
   static async getUsers(prismaClientInstance: PrismaClient) {
     try {
-      const users = await pCI.user.findMany();
+      const users = await prismaClientInstance.user.findMany();
       return handleResult(users);
     } catch (err) {
       return handleError(err);
@@ -64,84 +24,52 @@ export class UserServices {
         where: { id },
       });
 
-      return {
-        ok: true,
-        data: user,
-        error: null,
-      } as const;
+      return handleResult(user);
     } catch (err) {
-      return {
-        ok: false,
-        data: null,
-        error: narrowError(err).message,
-      } as const;
+      return handleError(err);
     }
   }
 
-  static async getUserCredentials(
-    email: string,
-    prismaClientInstance: PrismaClient,
-  ): Promise<ServiceResult<UserIncludeCredentials>> {
+  static async getUserCredentials(email: string, prismaClientInstance: PrismaClient) {
     try {
-      const user = await prismaClientInstance.user.findUnique({
+      const userData = await prismaClientInstance.user.findUnique({
         where: { email },
-        include: userInclude,
+        include: {
+          credential: true,
+          memberships: {
+            include: {
+              org: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
 
-      return {
-        ok: true,
-        data: user,
-        error: null,
-      };
+      return handleResult(userData);
     } catch (err) {
-      return {
-        ok: false,
-        data: null,
-        error: narrowError(err).message,
-      };
+      return handleError(err);
     }
   }
 
-  static async createUser(payload: BaseUser, prismaClientInstance: PrismaClient) {
-    const { data, error } = baseUserSchema.safeParse(payload);
-
-    if (error) {
-      return {
-        ok: false,
-        data: null,
-        error: z.flattenError(error),
-      };
-    }
-    // const hash = await hashGenerator(user.password);
+  static async createUser(data: BaseUser, prismaClientInstance: PrismaClient) {
     try {
       const newUser = await prismaClientInstance.user.create({
         data,
       });
-      if (!newUser)
-        return {
-          ok: false,
-          data: null,
-          error: "user could not be created",
-        } as const;
-
-      return {
-        ok: true,
-        data: newUser,
-        error: null,
-      } as const;
+      return handleResult(newUser);
     } catch (err) {
-      return {
-        ok: false,
-        data: null,
-        error: narrowError(err).message,
-      } as const;
+      return handleError(err);
     }
   }
 
-  static async updateUser(data: UpdateUser, prismaClientInstance: PrismaClient) {
+  static async updateUser(data: UpdateUser, id: string, prismaClientInstance: PrismaClient) {
     try {
       const updatedUser = await prismaClientInstance.user.update({
-        where: { id: data.id },
+        where: { id },
         data,
       });
 

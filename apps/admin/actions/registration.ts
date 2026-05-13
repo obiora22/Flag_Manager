@@ -1,7 +1,8 @@
 "use server";
+
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import { APIResult } from "@repo/utils/serviceReturn";
-import { AccountInputSchema } from "@schema/account.schema";
+import { APIResult } from "@packages/db/sharedTypes";
+import { AccountInputSchema } from "@packages/schema";
 
 export type AccountRegistrationState =
   | {

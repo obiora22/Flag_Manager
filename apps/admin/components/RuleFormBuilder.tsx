@@ -1,12 +1,12 @@
 "use client";
 
-import React, { SetStateAction, useState, useTransition } from "react";
-import { Rule } from "@db/types/rules.ts";
-import { Plus, Trash2, GripVertical, Zap, Users, AlertCircle, Loader2, Info } from "lucide-react";
 import { clientSideFetch } from "@admin/lib/clientFetch.ts";
-import { ApiResult } from "@api/lib/types.ts";
-import type { BasicFlag, CompositeFlag } from "@api/lib/contracts";
-import { rulesSchema } from "@schema/rule.schema";
+import type { Flag } from "@packages/db/prisma/browser";
+import type { FlagData, Rule } from "@packages/db/sharedTypes";
+import { APIResult } from "@packages/db/sharedTypes";
+import { rulesSchema } from "@packages/schema";
+import { AlertCircle, GripVertical, Info, Loader2, Plus, Trash2, Users, Zap } from "lucide-react";
+import React, { SetStateAction, useState, useTransition } from "react";
 
 type Operator =
   | "equals"
@@ -42,12 +42,12 @@ interface RuleFormData {
 }
 
 interface RuleBuilderFormProps {
-  flag: CompositeFlag;
+  flag: FlagData;
   flagType: "BOOLEAN" | "STRING" | "NUMBER" | "JSON";
   existingRule?: Rule;
   onSuccess?: (ruleId: string) => void;
   onCancel?: () => void;
-  setFlag: React.Dispatch<SetStateAction<CompositeFlag>>;
+  setFlag: React.Dispatch<SetStateAction<FlagData>>;
 }
 
 export default function RuleBuilderForm({
@@ -173,7 +173,7 @@ export default function RuleBuilderForm({
         serve: parsedServe,
       };
 
-      const result = await clientSideFetch<ApiResult<BasicFlag>>(`/flags/${flag.id}`, {
+      const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flag.id}`, {
         method: "PATCH",
         body: JSON.stringify({
           rules: [...(flag?.rules || []), ruleData],
@@ -182,9 +182,9 @@ export default function RuleBuilderForm({
 
       if (result.status !== "success") {
         setError(result.error);
-      } else if (result.payload.status !== "success") {
+      } else if (result.payload.status === "error") {
         setError(result.payload.error);
-      } else {
+      } else if (result.payload.status === "success") {
         const { error, data } = rulesSchema.safeParse(result.payload.data.rules);
         if (error) {
           setError("Invalid rule data");
