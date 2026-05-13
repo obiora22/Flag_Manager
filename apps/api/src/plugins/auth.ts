@@ -1,4 +1,3 @@
-import { Membership } from "@packages/db/prisma/server";
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import jwt from "jsonwebtoken";

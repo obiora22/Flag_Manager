@@ -1,4 +1,3 @@
-import { EnvironmentServices } from "@api/src/services/environmentServices.js";
 import { handleResult } from "@packages/db/utils";
 import {
   BaseEnvironment,
@@ -13,6 +12,7 @@ import fastify, {
   FastifyRequest,
 } from "fastify";
 import z from "zod";
+import { EnvironmentServices } from "../services/environmentServices.js";
 
 interface RequestProps {
   Params: { id: string };

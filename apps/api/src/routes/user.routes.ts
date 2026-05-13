@@ -1,4 +1,3 @@
-import { UserServices } from "@api/src/services/userServices.js";
 import { User } from "@packages/db/prisma/server";
 import { handleError, handleResult } from "@packages/db/utils";
 import { BaseUser, baseUserSchema, UpdateUser, UpdateUserSchema } from "@packages/schema";
@@ -10,6 +9,7 @@ import {
   RequestGenericInterface,
 } from "fastify";
 import { z } from "zod";
+import { UserServices } from "../services/userServices.js";
 
 interface RequestParams<T, Q = any> {
   Params: T;

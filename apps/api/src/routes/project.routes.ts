@@ -1,4 +1,3 @@
-import { ProjectServices } from "@api/src/services/projectServices.js";
 import {
   BaseProject,
   baseProjectSchema,
@@ -13,6 +12,7 @@ import {
   HookHandlerDoneFunction,
 } from "fastify";
 import z from "zod";
+import { ProjectServices } from "../services/projectServices.js";
 
 export async function projectRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
   fastify.get("/projects", {

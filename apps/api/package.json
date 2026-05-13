@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx --env-file=./.env.development src/server.ts",
-    "start": "node dist/server.js"
+    "start": "node --env-file=./.env.development ./dist/server.js"
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
