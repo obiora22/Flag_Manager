@@ -41,6 +41,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "db:deploy": "npx prisma migrate deploy",
     "format": "npx prisma format --schema='./schema.prisma'",
     "generate": "npx prisma generate --schema='./schema.prisma'",
     "push": "npx prisma db push --schema='./schema.prisma'",
