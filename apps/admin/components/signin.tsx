@@ -1,4 +1,5 @@
 "use client";
+
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
@@ -23,8 +24,8 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center mb-6">Log In</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">

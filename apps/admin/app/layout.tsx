@@ -25,9 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistMono.className} ${geistMono.variable} antialiased`}>
+      <body className={`${geistMono.className} ${geistMono.variable} antialiased bg-gray-900`}>
         <SessionProvider>
-          <main>{children}</main>
+          <main className=" bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
+            {children}
+          </main>
         </SessionProvider>
       </body>
     </html>

@@ -18,16 +18,38 @@ type FetchResponse<T> =
 export async function apiFetchClient<T>(
   path: string,
   options: RequestInit = {},
+  publicRoute: boolean = false,
 ): Promise<FetchResponse<T>> {
   const API_URL = process.env.API_URL;
   const AUTH_SECRET = process.env.AUTH_SECRET;
-  const session = await auth();
 
   if (!AUTH_SECRET || !API_URL)
     return {
       status: "api-error",
       error: "Request failed: Missing environment variable(s)",
     };
+
+  if (publicRoute) {
+    try {
+      const response = await fetch(`${API_URL}${path}`);
+      if (!response.ok) {
+        return {
+          status: "api-error",
+          error: await response.text(),
+        };
+      }
+      return {
+        status: "success",
+        payload: await response.json(),
+      };
+    } catch (err) {
+      return {
+        status: "api-error",
+        error: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+  const session = await auth();
 
   if (!session) {
     return {

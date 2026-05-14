@@ -8,7 +8,10 @@ import { BaseUser } from "@packages/schema";
 export async function getUserCredentials(email: string): Promise<UserIncludeCredentials | null> {
   const result = await apiFetchClient<APIResult<UserIncludeCredentials>>(
     `/users/email?email=${email}`,
+    {},
+    true,
   );
+
   if (result.status !== "success" || result.payload.status !== "success") {
     return null;
   } else {
