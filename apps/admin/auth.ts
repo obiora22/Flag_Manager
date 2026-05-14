@@ -113,7 +113,7 @@ const nextAuth = NextAuth({
     },
   },
   pages: {
-    signIn: "/signIn",
+    signIn: "/signin",
   },
 });
 
