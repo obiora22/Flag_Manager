@@ -22,10 +22,12 @@ interface AccountRegistrationResult {
   userId: string;
 }
 
-const API_URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.DEVELOPMENT_API_URL
-    : process.env.PRODUCTION_API_URL;
+// const API_URL =
+//   process.env.NODE_ENV === "development"
+//     ? process.env.DEVELOPMENT_API_URL
+//     : process.env.PRODUCTION_API_URL;
+
+const API_URL = process.env.API_URL;
 
 export async function accountRegistrationAction(
   prevState: AccountRegistrationState,

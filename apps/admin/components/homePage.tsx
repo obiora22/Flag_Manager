@@ -1,21 +1,22 @@
 "use client";
-import React, { useState } from "react";
-import { signOut } from "next-auth/react";
+
+import type { DashboardData } from "@packages/db/sharedTypes";
 import {
-  Flag,
-  Zap,
-  Users,
-  BarChart3,
   ArrowRight,
+  BarChart3,
+  ChevronRight,
+  Code,
+  Flag,
   Globe,
   Shield,
-  Code,
-  ChevronRight,
+  Users,
+  Zap,
 } from "lucide-react";
-import { OrgSwitcher } from "./orgSwitcher";
-import type { DashboardData } from "@db/contracts";
 import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
+import React, { useState } from "react";
+import { OrgSwitcher } from "./orgSwitcher";
 
 interface Props {
   dashboardData: DashboardData;

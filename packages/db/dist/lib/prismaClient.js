@@ -1,16 +1,14 @@
-import { PrismaClient } from "../prisma/generated/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-// import { User } from "../prisma/generated/models.js"
+import pg from "pg";
+import { PrismaClient } from "../prisma/generated/client.js";
 const log = [
     {
         level: "query",
         emit: "event",
     },
 ];
-const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
-    // schema: "public",
-});
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 const singleton = () => new PrismaClient({ adapter, log });
 const globalPrisma = global;
 export const prismaClientInstance = globalPrisma.prisma ?? singleton();

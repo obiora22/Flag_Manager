@@ -1,18 +1,18 @@
-import React, { SetStateAction, useMemo, useState, useTransition } from "react";
-import { AlertCircle, Loader2 } from "lucide-react";
-import { BaseFlag } from "@schema/src/models//flag.schema";
-import { isEqual } from "lodash";
-import type { BasicFlag, CompositeFlag } from "@db/contracts";
 import { clientSideFetch } from "@admin/lib/clientFetch";
-import { APIResult } from "@db/lib/serviceReturn";
+import { Flag } from "@packages/db/prisma/browser";
+import type { APIResult, FlagData } from "@packages/db/sharedTypes";
+// import { BaseFlag } from "@schema/src/models//flag.schema";
+import { isEqual } from "lodash";
+import { AlertCircle, Loader2 } from "lucide-react";
+import React, { SetStateAction, useMemo, useState, useTransition } from "react";
 
 interface Props {
-  flag?: CompositeFlag;
+  flag?: FlagData;
   projectId: string;
   onSuccess?: (flagId: string) => void;
   onCancel: () => void;
   revalidate?: () => void;
-  setFlag?: React.Dispatch<SetStateAction<CompositeFlag>>;
+  setFlag?: React.Dispatch<SetStateAction<FlagData>>;
 }
 
 type ReturnValueTye = "BOOLEAN" | "STRING" | "NUMBER" | "JSON";
@@ -47,7 +47,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const [formData, setFormData] = useState<BaseFlag>(stableInitialData);
+  const [formData, setFormData] = useState<typeof stableInitialData>(stableInitialData);
 
   const isDirty = useMemo(() => {
     return !isEqual(formData, stableInitialData);
@@ -61,7 +61,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
     setError(null);
 
     const createFlag = async () => {
-      const response = await clientSideFetch<APIResult<CompositeFlag>>("/flags", {
+      const response = await clientSideFetch<APIResult<FlagData>>("/flags", {
         method: "POST",
         body: JSON.stringify(formData),
       });
@@ -69,7 +69,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
         setError(response.error);
       } else if (response.payload.status === "error") {
         setError(response.payload.error);
-      } else {
+      } else if (response.payload.status !== "not-found") {
         console.log(response.payload.data);
         if (revalidate) revalidate();
         onCancel();
@@ -78,7 +78,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
 
     const updateFlag = async (flagId: string) => {
       if (!revalidate || !setFlag) return;
-      const result = await clientSideFetch<APIResult<BasicFlag>>(`/flags/${flagId}`, {
+      const result = await clientSideFetch<APIResult<Flag>>(`/flags/${flagId}`, {
         method: "PATCH",
         body: JSON.stringify(formData),
       });
@@ -87,7 +87,7 @@ export function FlagForm({ onCancel, projectId, revalidate, flag, setFlag }: Pro
         setError(result.error);
       } else if (result.payload.status === "error") {
         setError(result.payload.error);
-      } else {
+      } else if (result.payload.status !== "not-found") {
         const updatedFlag = result.payload.data;
         if (revalidate) revalidate();
         if (setFlag)

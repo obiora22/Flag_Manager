@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Condition } from "@db/types/rules.ts";
+import { Condition } from "@packages/db/sharedTypes";
 
 const operators = [
   "equals",

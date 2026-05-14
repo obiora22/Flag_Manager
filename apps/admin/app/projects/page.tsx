@@ -2,8 +2,7 @@ import { ErrorState } from "@admin/components/ErrorState";
 import { ProjectList } from "@admin/components/Project/ProjectList.tsx";
 import { checkUserSession } from "@admin/lib/auth-helpers";
 import { apiFetchClient } from "@admin/lib/serverFetch";
-import type { ProjectData } from "@db/contracts";
-import { APIResult } from "@db/lib/serviceReturn";
+import type { APIResult, ProjectData } from "@packages/db/sharedTypes";
 
 export default async function ProjectPage() {
   const session = await checkUserSession();

@@ -1,5 +1,5 @@
-import { config } from "dotenv";
 import * as path from "path";
+import { config } from "dotenv";
 import { defineConfig, env, PrismaConfig } from "prisma/config";
 
 // This allows env file loading outside of repo root directory
@@ -12,6 +12,6 @@ export default defineConfig({
     seed: "tsx ./prisma/seed.js",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: env("DATABASE_DIRECT_URL"),
   },
 }) satisfies PrismaConfig;

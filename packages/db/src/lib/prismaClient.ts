@@ -1,7 +1,7 @@
-import { PrismaClient, Prisma, type User } from "../prisma/generated/client.js";
-import { LogDefinition, LogLevel } from "../prisma/generated/internal/prismaNamespace.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-// import { User } from "../prisma/generated/models.js"
+import pg from "pg";
+import { Prisma, PrismaClient, type User } from "../prisma/generated/client.js";
+import { LogDefinition, LogLevel } from "../prisma/generated/internal/prismaNamespace.js";
 
 const log: (LogLevel | LogDefinition)[] = [
   {
@@ -10,11 +10,8 @@ const log: (LogLevel | LogDefinition)[] = [
   },
 ];
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-  // schema: "public",
-});
-
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 const singleton = () => new PrismaClient({ adapter, log });
 
 const globalPrisma = global as unknown as { prisma: PrismaClient };

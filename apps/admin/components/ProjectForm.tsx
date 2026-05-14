@@ -1,10 +1,9 @@
+import { clientSideFetch } from "@admin/lib/clientFetch";
+import { Project } from "@packages/db/prisma/browser";
+import type { APIResult, ProjectData } from "@packages/db/sharedTypes";
+import { isEqual } from "lodash";
 import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useMemo, useState, useTransition } from "react";
-import type { ProjectData } from "@db/contracts";
-import { isEqual } from "lodash";
-import { clientSideFetch } from "@admin/lib/clientFetch";
-import { APIResult } from "@db/lib/serviceReturn";
-import { Project } from "@db/prisma/generated/client";
 
 interface Props {
   organizationId: string;

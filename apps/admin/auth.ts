@@ -1,8 +1,8 @@
-import NextAuth, { type DefaultSession, Session } from "next-auth";
+import { Role } from "@packages/db/prisma/server";
+import NextAuth, { Session, type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compareHash } from "./lib/hashAndCompare";
 import { getUserCredentials } from "./actions/users";
-import { Role } from "@db/prisma/generated/client";
+import { compareHash } from "./lib/hashAndCompare";
 
 export interface ExtendedUser {
   id: string;

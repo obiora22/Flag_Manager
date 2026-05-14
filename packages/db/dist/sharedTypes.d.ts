@@ -8,7 +8,7 @@ export type APIResult<T> = {
     status: "error";
     error: string;
 };
-interface Condition {
+export interface Condition {
     attribute: string;
     operator: "equals" | "notEquals" | "contains" | "notContains" | "gt" | "gte" | "lt" | "lte" | "startsWith" | "endsWith" | "in";
     value: unknown;

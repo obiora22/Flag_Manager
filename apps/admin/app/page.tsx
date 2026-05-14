@@ -1,11 +1,10 @@
 "use server";
 
-import { Dashboard } from "@admin/components/homePage";
-import { apiFetchClient } from "@admin/lib/serverFetch";
-import type { DashboardData } from "@db/contracts";
-import { checkUserSession } from "@admin/lib/auth-helpers.ts";
 import { ErrorState } from "@admin/components/ErrorState";
-import { APIResult } from "@db/lib/serviceReturn";
+import { Dashboard } from "@admin/components/homePage";
+import { checkUserSession } from "@admin/lib/auth-helpers.ts";
+import { apiFetchClient } from "@admin/lib/serverFetch";
+import type { APIResult, DashboardData } from "@packages/db/sharedTypes";
 
 export default async function Home() {
   const session = await checkUserSession();

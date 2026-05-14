@@ -1,5 +1,6 @@
 import { auth } from "@admin/auth.ts";
 import jwt from "jsonwebtoken";
+
 type FetchResponse<T> =
   | {
       status: "success";
@@ -18,7 +19,7 @@ export async function apiFetchClient<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<FetchResponse<T>> {
-  const API_URL = process.env.DEVELOPMENT_API_URL;
+  const API_URL = process.env.API_URL;
   const AUTH_SECRET = process.env.AUTH_SECRET;
   const session = await auth();
 

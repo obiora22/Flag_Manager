@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-export async function GET(
-  request: NextRequest,
-  context: RouteContext<"/api/auth/users/[email]">
-) {
+
+export async function GET(request: NextRequest, context: RouteContext<"/api/auth/users/[email]">) {
   const { email } = await context.params;
 
-  const response = await fetch(
-    process.env.DEVELOPMENT_API_URL + `/users/email/${email}`
-  );
+  const response = await fetch(process.env.API_URL + `/users/email/${email}`);
 
   if (!response.ok) {
     return NextResponse.json({

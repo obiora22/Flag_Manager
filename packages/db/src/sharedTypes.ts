@@ -20,7 +20,7 @@ export type APIResult<T> =
       error: string;
     };
 
-interface Condition {
+export interface Condition {
   attribute: string;
   operator:
     | "equals"

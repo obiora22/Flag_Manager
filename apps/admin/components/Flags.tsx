@@ -1,50 +1,49 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
-import {
-  Flag as FlagIcon,
-  Plus,
-  Search,
-  Filter,
-  MoreVertical,
-  Edit,
-  Trash2,
-  Copy,
-  Archive,
-  AlertCircle,
-  Loader2,
-  RefreshCw,
-  Clock,
-  GitBranch,
-  CheckCircle2,
-  Eye,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
 import { FlagForm } from "@admin/components/FlagForm.tsx";
 import Modal from "@admin/components/Modal.tsx";
-import { FetchResponse, clientSideFetch } from "@admin/lib/clientFetch.ts";
+import { clientSideFetch, FetchResponse } from "@admin/lib/clientFetch.ts";
+import { Flag } from "@packages/db/prisma/browser";
+import { APIResult, FlagData } from "@packages/db/sharedTypes";
+import {
+  AlertCircle,
+  Archive,
+  CheckCircle2,
+  Clock,
+  Copy,
+  Edit,
+  Eye,
+  Filter,
+  Flag as FlagIcon,
+  GitBranch,
+  Loader2,
+  MoreVertical,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState, useTransition } from "react";
 import useSWR from "swr";
-import { APIResult } from "@db/lib/serviceReturn";
 import { ErrorState } from "./ErrorState";
-import { Flag } from "@db/prisma/generated/client";
-import type { BasicFlag, CompositeFlag } from "@db/contracts";
 
 interface FlagsListProps {
   projectId: string;
   projectName: string;
-  initialFlags: CompositeFlag[];
+  initialFlags: FlagData[];
 }
 
-type Result = FetchResponse<APIResult<CompositeFlag[]>>;
+type Result = FetchResponse<APIResult<FlagData[]>>;
 
 export default function Flags({ projectId, projectName, initialFlags }: FlagsListProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "archived">("all");
-  const [typeFilter, setTypeFilter] = useState<"all" | BasicFlag["returnValueType"]>("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | Flag["returnValueType"]>("all");
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [targetFlag, setTargetFlag] = useState<CompositeFlag | null>(null);
+  const [targetFlag, setTargetFlag] = useState<FlagData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [flagFormOpen, setFlagFormOpen] = useState(false);
@@ -97,7 +96,7 @@ export default function Flags({ projectId, projectName, initialFlags }: FlagsLis
     router.push(`/projects/${projectId}/flags/${flagId}`);
   };
 
-  const handleEditFlag = (flag: CompositeFlag) => {
+  const handleEditFlag = (flag: FlagData) => {
     if (targetFlag) setTargetFlag(null);
     setTargetFlag(flag);
     setFlagFormOpen(true);
@@ -368,7 +367,7 @@ function StatCard({ label, value, icon: Icon, color }: StatCardProps) {
 }
 
 interface FlagCardProps {
-  flag: CompositeFlag;
+  flag: FlagData;
   projectId: string;
   activeDropdown: string | null;
   onToggleDropdown: (id: string) => void;
@@ -391,7 +390,7 @@ function FlagCard({
   onDelete,
   isProcessing,
 }: FlagCardProps) {
-  const getTypeColor = (type: BasicFlag["returnValueType"]): string => {
+  const getTypeColor = (type: Flag["returnValueType"]): string => {
     switch (type) {
       case "BOOLEAN":
         return "bg-blue-500/10 text-blue-400 border-blue-500/30";
@@ -406,11 +405,11 @@ function FlagCard({
     }
   };
 
-  const getStatusColor = (flag: CompositeFlag): string => {
+  const getStatusColor = (flag: FlagData): string => {
     return flag.archived ? "text-slate-400" : flag.enabled ? "text-green-400" : "text-slate-400";
   };
 
-  const formatValue = (value: unknown, type: BasicFlag["returnValueType"]): string => {
+  const formatValue = (value: unknown, type: Flag["returnValueType"]): string => {
     if (type === "BOOLEAN") return value ? "true" : "false";
     if (type === "JSON") return JSON.stringify(value);
     return String(value);
