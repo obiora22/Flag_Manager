@@ -1,7 +1,7 @@
-import { UserServices } from "@api/src/services/userServices.js";
 import { handleError } from "@packages/db/utils";
 import { baseUserSchema, UpdateUserSchema } from "@packages/schema";
 import { z } from "zod";
+import { UserServices } from "../services/userServices.js";
 export async function userRoutes(fastify, options) {
     fastify.get("/users", {
         handler: async (request, reply) => {

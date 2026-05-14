@@ -1,8 +1,8 @@
-import authPlugin from "@api/src/plugins/auth.js";
-import prismaPlugin from "@api/src/plugins/prisma.js";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import Fastify from "fastify";
+import authPlugin from "./plugins/auth.js";
+import prismaPlugin from "./plugins/prisma.js";
 import { accountRegistrationRoutes } from "./routes/account.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import { environmentRoutes } from "./routes/environment.routes.js";

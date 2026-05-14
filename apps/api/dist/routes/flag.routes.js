@@ -1,6 +1,6 @@
-import { FlagService } from "@api/src/services/flagService.js";
 import { baseFlagSchema, updateFlagSchema } from "@packages/schema";
 import z from "zod";
+import { FlagService } from "../services/flagService.js";
 export async function flagRoutes(fastify, options) {
     fastify.get("/flags", {
         async handler(request, reply) {

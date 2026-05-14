@@ -1,7 +1,7 @@
-import { EnvironmentServices } from "@api/src/services/environmentServices.js";
 import { handleResult } from "@packages/db/utils";
 import { baseEnvironmentSchema, updateEnvironmentSchema, } from "@packages/schema";
 import z from "zod";
+import { EnvironmentServices } from "../services/environmentServices.js";
 export async function environmentRoutes(fastify, options) {
     fastify.get("/environments", {
         async handler(request, reply) {

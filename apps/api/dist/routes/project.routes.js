@@ -1,6 +1,6 @@
-import { ProjectServices } from "@api/src/services/projectServices.js";
 import { baseProjectSchema, updateProjectSchema, } from "@packages/schema";
 import z from "zod";
+import { ProjectServices } from "../services/projectServices.js";
 export async function projectRoutes(fastify, options) {
     fastify.get("/projects", {
         handler: async (request, reply) => {
