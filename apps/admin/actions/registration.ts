@@ -3,6 +3,7 @@
 import { apiFetchClient } from "@admin/lib/serverFetch";
 import { APIResult } from "@packages/db/sharedTypes";
 import { AccountInputSchema } from "@packages/schema";
+import z from "zod";
 
 export type AccountRegistrationState =
   | {
@@ -36,8 +37,8 @@ export async function accountRegistrationAction(
   console.log("server action!", { payload }, process.env);
 
   const body = {
-    firstName: payload.get("firstName"),
-    lastName: payload.get("lastName"),
+    firstname: payload.get("firstName"),
+    lastname: payload.get("lastName"),
     email: payload.get("email"),
     organizationName: payload.get("organizationName"),
     password: payload.get("password"),
@@ -49,17 +50,19 @@ export async function accountRegistrationAction(
   if (error) {
     return {
       status: "error",
-      error: error.message,
+      error: String(z.flattenError(error)),
     };
   }
 
-  const result = await apiFetchClient<APIResult<AccountRegistrationResult>>(`${API_URL}/accounts`, {
+  const result = await apiFetchClient<APIResult<AccountRegistrationResult>>("/accounts", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
     body: JSON.stringify(data),
   });
+
+  console.log("Account registeration", { result });
 
   if (result.status !== "success" || result.payload.status !== "success") {
     return {

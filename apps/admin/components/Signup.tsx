@@ -1,11 +1,12 @@
 "use client";
 
 import { accountRegistrationAction } from "@admin/actions/registration";
-import { useState, useActionState } from "react";
+import { Loader2 } from "lucide-react";
+import { useActionState, useState } from "react";
 
 const initialState = {
-  firstname: "",
-  lastname: "",
+  firstName: "",
+  lastName: "",
   email: "",
   organizationName: "",
   password: "",
@@ -13,27 +14,34 @@ const initialState = {
 };
 
 export function Signup() {
-  const [form, setForm] = useState(initialState);
+  const [form, setForm] = useState<typeof initialState>(initialState);
   const [passwordConfirmation, setPasswordConfirmation] = useState(true);
-  const [_, formAction, isPending] = useActionState(accountRegistrationAction, {
+  const [state, formAction, isPending] = useActionState(accountRegistrationAction, {
     status: "idle",
   });
+
+  console.log({ state });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.name, e.target.value);
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center mb-6">Create an Account</h1>
 
         <form action={formAction} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">First Name</label>
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+              First Name
+            </label>
             <input
+              id="firstName"
               type="text"
               name="firstName"
-              value={form.firstname}
+              value={form.firstName}
               onChange={handleChange}
               placeholder="First Name"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -41,11 +49,14 @@ export function Signup() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Last Name</label>
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+              Last Name
+            </label>
             <input
+              id="lastName"
               type="text"
               name="lastName"
-              value={form.lastname}
+              value={form.lastName}
               onChange={handleChange}
               placeholder="Last Name"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -55,8 +66,11 @@ export function Signup() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               name="email"
               value={form.email}
@@ -64,12 +78,16 @@ export function Signup() {
               placeholder="you@example.com"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
+              autoComplete="email"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Organization Name</label>
+            <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700">
+              Organization Name
+            </label>
             <input
+              id="organizationName"
               type="text"
               name="organizationName"
               value={form.organizationName}
@@ -82,7 +100,9 @@ export function Signup() {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               id="password"
               type="password"
@@ -97,8 +117,14 @@ export function Signup() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label
+              htmlFor="passwordConfirmation"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
             <input
+              id="passwordConfirmation"
               type="password"
               name="passwordConfirmation"
               value={form.passwordConfirmation}
@@ -125,6 +151,10 @@ export function Signup() {
             disabled={isPending || !passwordConfirmation}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
+            <Loader2
+              className={`animate-spin ${isPending ? "inline-block" : "hidden"}`}
+              size={16}
+            />
             Sign Up
           </button>
         </form>

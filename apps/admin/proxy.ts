@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
-import authConfig from "./auth.config";
 import { NextRequest, NextResponse } from "next/server";
+import authConfig from "./auth.config";
 
 type AppRouteHandlerFn = (
   req: NextRequest,
@@ -39,9 +39,9 @@ export const proxy: AppRouteHandlerFn = auth(async (request: NextRequest) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isAuthRoute && session_token) {
-    return NextResponse.redirect("/");
-  }
+  // if (isAuthRoute && session_token) {
+  //   return NextResponse.redirect("/");
+  // }
 
   return NextResponse.next();
 });

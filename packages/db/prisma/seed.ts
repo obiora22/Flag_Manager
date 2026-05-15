@@ -5,7 +5,7 @@ import {
   PrismaClient,
   ReturnValueType,
   Role,
-} from "../prisma/generated/client.js";
+} from "../src/prisma/generated/client";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
