@@ -63,10 +63,12 @@ const nextAuth = NextAuth({
       async authorize(credentials) {
         const userCredentials = credentials as { email: string; password: string };
         const user = await getUserCredentials(userCredentials.email);
+        console.log("Authorize", JSON.stringify(user));
         if (!user) return null;
         const { credential } = user;
         const match = await compareHash(userCredentials.password, credential?.passwordHash);
 
+        console.log("Authorize", JSON.stringify(user));
         const { id, firstname, lastname, email, memberships } = user;
         if (match)
           return {
