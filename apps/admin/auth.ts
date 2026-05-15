@@ -68,7 +68,7 @@ const nextAuth = NextAuth({
         const { credential } = user;
         const match = await compareHash(userCredentials.password, credential?.passwordHash);
 
-        console.log("Authorize", JSON.stringify(user));
+        console.log("Authorize", JSON.stringify(user), { match });
         const { id, firstname, lastname, email, memberships } = user;
         if (match)
           return {
