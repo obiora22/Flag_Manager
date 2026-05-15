@@ -19,10 +19,13 @@ export const proxy: AppRouteHandlerFn = auth(async (request: NextRequest) => {
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  console.log({ isAuthRoute }, pathname);
+  console.log({ isAuthRoute }, pathname, { isProtectedRoute });
 
   const csrf_token = request.cookies.get("authjs.csrf-token")?.value;
-  const session_token = request.cookies.get("authjs.session-token")?.value;
+  const session_token =
+    process.env.NODE_ENV === "production"
+      ? request.cookies.get("__Secure-authjs.session-token")?.value
+      : request.cookies.get("authjs.session-token")?.value;
   console.log({ csrf_token }, { session_token });
   if (csrf_token) {
     console.log({ csrf_token }, { session_token });
